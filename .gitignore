@@ -1,4 +1,5 @@
 .baseDir.ts
+.DS_Store
 .tscache
 dist
 node_modules
