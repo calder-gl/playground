@@ -1,3 +1,4 @@
+import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
@@ -53,6 +54,11 @@ export class Server {
 
     // Mount logger
     this.app.use(logger("dev"));
+
+    // Mount query string parser
+    this.app.use(bodyParser.urlencoded({
+      extended: true
+    }));
 
     // Catch 404 and forward to error handler
     this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {

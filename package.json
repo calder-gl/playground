@@ -10,14 +10,18 @@
     "server": "node ./bin/run"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "calder-gl": "github:calder-gl/calder#master",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
+    "gl-matrix": "^2.6.1",
+    "lodash": "^4.17.10",
     "milligram": "^1.3.0",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4"
   },
   "devDependencies": {
+    "@types/body-parser": "1.16.8",
     "@types/errorhandler": "0.0.32",
     "@types/method-override": "0.0.31",
     "@types/morgan": "^1.7.35",
