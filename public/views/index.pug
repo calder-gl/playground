@@ -1,0 +1,24 @@
+html
+  head
+    title Calder Playground
+
+    link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic')
+    link(rel='stylesheet', href='//cdn.rawgit.com/necolas/normalize.css/master/normalize.css')
+    link(rel='stylesheet', href='//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css')
+    link(rel='stylesheet', href='styles/main.css')
+
+  body
+    .container
+      h1 Calder Playground
+      hr
+
+      .row
+        .column.column-50
+          h2 Calder Code
+          form(method='POST' action='/render')
+            textarea#code // Your CalderGL code...
+            input(type='submit' name='Run')
+
+        .column.column-50
+          h2 Compiled WebGL
+          canvas#webgl

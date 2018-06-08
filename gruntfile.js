@@ -13,7 +13,7 @@ module.exports = function(grunt) {
           },
           {
             expand: true,
-            cwd: "./views",
+            cwd: "./public/views",
             src: ["**"],
             dest: "./dist/views"
           }
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         tasks: ["ts"]
       },
       views: {
-        files: ["views/**/*.pug"],
+        files: ["public/views/**/*.pug"],
         tasks: ["copy"]
       }
     }
