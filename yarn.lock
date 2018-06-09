@@ -418,11 +418,11 @@ cache-base@^1.0.1:
 
 "calder-gl@github:calder-gl/calder#master":
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/0c6afa8669103df973c71687630f2f04e0248043"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/0bce379d37177103d01305ff0e9c71881f1afeaf"
   dependencies:
     gl-matrix "^2.5.1"
     lodash "^4.17.10"
-    regl "^1.3.1"
+    regl regl-project/regl
     ts-sinon "^1.0.12"
     tslib "~1.9.0"
 
@@ -2515,9 +2515,9 @@ registry-url@^3.0.3:
   dependencies:
     rc "^1.0.1"
 
-regl@^1.3.1:
+regl@regl-project/regl:
   version "1.3.6"
-  resolved "https://registry.yarnpkg.com/regl/-/regl-1.3.6.tgz#d69967c577208ce69c2de7989c6188d565b242a0"
+  resolved "https://codeload.github.com/regl-project/regl/tar.gz/3dc66c5d52771e79562bbf28818250329c8f422e"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
