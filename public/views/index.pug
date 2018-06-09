@@ -15,10 +15,14 @@ html
       .row
         .column.column-50
           h2 Calder Code
-          form(method='POST' action='/render')
-            textarea#code(name='code') // Your CalderGL code...
+          form(method='POST' action='/')
+            textarea#code(name='code')= code || '// Your CalderGL code...'
             input(type='submit' name='Run')
 
         .column.column-50
           h2 Compiled WebGL
           canvas#webgl
+
+      .row
+        pre
+          code#log= logs

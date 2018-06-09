@@ -20,7 +20,7 @@ export class IndexRoute extends BaseRoute {
             new IndexRoute().index(req, res, next);
         });
 
-        router.post("/render", (req: Request, res: Response) => {
+        router.post("/", (req: Request, res: Response) => {
             new IndexRoute().renderGL(req, res);
         });
     }
@@ -58,15 +58,24 @@ export class IndexRoute extends BaseRoute {
      * @param {Response} res The express Response object.
      */
     public renderGL(req: Request, res: Response) {
-        const options: Object = {};
-
         // Transpile the code into ES5 JavaScript
         let es5 = ts.transpile(req.body.code);
 
-        // Render the index page
-        this.render(req, res, "index", options);
+        // Update console.log to append the logged output
+        let logs_array = [];
+        const default_log = console.log;
+        console.log = (value) => {
+            default_log(value);
+            logs_array.push(value);
+        };
 
         // Evaluate the ES5 code
         eval(es5);
+
+        // Pass in an object to the view to update content
+        const options: Object = { code: req.body.code, logs: logs_array.join("\n") };
+
+        // Render the index page
+        this.render(req, res, "index", options);
     }
 }
