@@ -21,25 +21,25 @@ const sphere = genSphere();
 sphere.colors = sphere.vertices.map(() => vec3.fromValues(1, 0, 0));
 
 const bone = Armature.define((root: Node) => {
-  root.createPoint('base', vec3.fromValues(0, 0, 0));
-  root.createPoint('tip', vec3.fromValues(0, 1, 0));
+    root.createPoint('base', vec3.fromValues(0, 0, 0));
+    root.createPoint('tip', vec3.fromValues(0, 1, 0));
 });
 
 const tower = bone();
 
 let top = tower;
 range(5).forEach(() => {
-  const nextPiece = bone();
-  nextPiece.point('base').stickTo(top.point('tip'));
-  nextPiece.point('base').attach(sphere);
-  nextPiece.setRotation(
-    mat4.fromQuat(
-      mat4.create(),
-      quat.fromEuler(quat.create(), Math.random() * 90 - 45, Math.random() * 90 - 45, 0)
-    )
-  );
+    const nextPiece = bone();
+    nextPiece.point('base').stickTo(top.point('tip'));
+    nextPiece.point('base').attach(sphere);
+    nextPiece.setRotation(
+        mat4.fromQuat(
+            mat4.create(),
+            quat.fromEuler(quat.create(), Math.random() * 90 - 45, Math.random() * 90 - 45, 0)
+        )
+    );
 
-  top = nextPiece;
+    top = nextPiece;
 });
 
 const test = bone();
@@ -60,23 +60,23 @@ const angle = Math.random() * 90;
 // Create a new constraint to be applied to the `test` Node.
 const constraints = Constraints.getInstance();
 constraints.add(test, (node: Node) => {
-  node
-    .hold(node.point('base'))
-    .grab(node.point('tip'))
-    .stretchTo(tower.point('tip'))
-    .release();
+    node
+        .hold(node.point('base'))
+        .grab(node.point('tip'))
+        .stretchTo(tower.point('tip'))
+        .release();
 });
 
 const draw = () => {
-  rotation += 1;
-  tower.setRotation(
-    mat4.fromQuat(mat4.create(), quat.fromEuler(quat.create(), angle, rotation, 0))
-  );
+    rotation += 1;
+    tower.setRotation(
+        mat4.fromQuat(mat4.create(), quat.fromEuler(quat.create(), angle, rotation, 0))
+    );
 
-  return {
-    objects: [tower, test],
-    debugParams: { drawAxes: true, drawArmatureBones: true }
-  };
+    return {
+        objects: [tower, test],
+        debugParams: { drawAxes: true, drawArmatureBones: true }
+    };
 };
 
 // Apply the constraints each frame.
