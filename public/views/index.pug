@@ -25,4 +25,7 @@ html
 
       .row
         pre
-          code#log= logs
+          code#log
+
+    script#source(type='x-source')!= source
+    script(src='js/client.js')

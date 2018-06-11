@@ -44,7 +44,7 @@ export class IndexRoute extends BaseRoute {
      * @param {Response} res The express Response object.
      * @param {NextFunction} next Execute the next method.
      */
-    public index(req: Request, res: Response, next: NextFunction) {
+    public index(req: Request, res: Response, _next: NextFunction) {
         const options: Object = {};
         this.render(req, res, "index", options);
     }
@@ -61,19 +61,8 @@ export class IndexRoute extends BaseRoute {
         // Transpile the code into ES5 JavaScript
         let es5 = ts.transpile(req.body.code);
 
-        // Update console.log to append the logged output
-        let logs_array = [];
-        const default_log = console.log;
-        console.log = (value) => {
-            default_log(value);
-            logs_array.push(value);
-        };
-
-        // Evaluate the ES5 code
-        eval(es5);
-
         // Pass in an object to the view to update content
-        const options: Object = { code: req.body.code, logs: logs_array.join("\n") };
+        const options: Object = { code: req.body.code, source: es5 };
 
         // Render the index page
         this.render(req, res, "index", options);

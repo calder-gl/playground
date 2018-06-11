@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
-    "calder-gl": "github:calder-gl/calder#master",
+    "calder-gl": "calder-gl/calder#install-script",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "gl-matrix": "^2.6.1",
@@ -29,7 +29,10 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-ts": "^6.0.0-beta.17",
+    "grunt-webpack": "^3.1.2",
     "nodemon": "^1.12.1",
-    "typescript": "^2.6.1"
+    "ts-loader": "^4.4.1",
+    "typescript": "^2.6.1",
+    "webpack": "^4.12.0"
   }
 }
