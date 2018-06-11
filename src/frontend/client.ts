@@ -1,19 +1,28 @@
 import * as calder from 'calder-gl';
+import * as glmatrix from 'gl-matrix';
 
-declare global {
-    interface Window { calder: any; }
+for (const key in calder) {
+    (<any> window)[key] = calder[key];
 }
 
-window.calder = calder;
+// TODO: remove this in the future when we have APIs in calder for everything
+for (const key in glmatrix) {
+    (<any> window)[key] = glmatrix[key];
+}
 
 const logElement = document.getElementById('log');
 if (logElement === null) {
     throw new Error('Could not find log element');
 }
 
-const sourceElement = document.getElementById('source');
-if (sourceElement === null) {
+const codeElement = document.getElementById('code');
+if (codeElement === null) {
     throw new Error('Could not find source code element');
+}
+
+const webglElement = document.getElementById('webgl');
+if (webglElement === null) {
+    throw new Error('Could not find webgl element');
 }
 
 const oldLog = console.log;
@@ -26,7 +35,11 @@ window.onerror = function(e: Event, _source: string, _fileno: number, _colno: nu
     console.log(e);
 };
 
-const source = sourceElement.innerText;
+const code = codeElement.innerText;
 
+const setup = new Function('renderer', code);
 
-eval(source);
+const renderer = new calder.Renderer(800, 600, 10);
+setup(renderer);
+
+webglElement.appendChild(renderer.stage);

@@ -10,6 +10,8 @@
     "server": "node ./bin/run"
   },
   "dependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.3",
     "body-parser": "^1.18.2",
     "calder-gl": "calder-gl/calder#install-script",
     "errorhandler": "^1.5.0",
