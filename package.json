@@ -13,7 +13,7 @@
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
     "body-parser": "^1.18.2",
-    "calder-gl": "calder-gl/calder#install-script",
+    "calder-gl": "calder-gl/calder",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "gl-matrix": "^2.6.1",

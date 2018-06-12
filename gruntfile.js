@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           sourceMap: false,
           rootDir: "src"
         }
-      },
+      }
     },
     watch: {
       ts: {
