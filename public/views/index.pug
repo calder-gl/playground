@@ -16,13 +16,16 @@ html
         .column.column-50
           h2 Calder Code
           form(method='POST' action='/')
-            textarea#code(name='code')= code || '// Your CalderGL code...'
+            textarea#source(name='source')= source
             input(type='submit' name='Run')
 
         .column.column-50
           h2 Compiled WebGL
-          canvas#webgl
+          div#webgl
 
       .row
         pre
-          code#log= logs
+          code#log
+
+    script#code(type='x-code')!= code
+    script(src='js/client.js')

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 /**
  * Abstract base class all routes should extend from.
@@ -44,7 +44,7 @@ export class BaseRoute {
      * @param {Object} options Additional options to append to the view's local scope.
      * @return void
      */
-    public render(req: Request, res: Response, view: string, options?: Object) {
+    public render(_req: Request, res: Response, view: string, options?: Object) {
         res.locals.BASE_URL = "/";
         res.locals.scripts = this.scripts;
         res.locals.title = this.title;

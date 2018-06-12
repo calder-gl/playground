@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { BaseRoute } from "./base_route";
-import * as ts from "typescript";
+import { transform } from 'babel-core';
+import  * as fs from 'fs';
+import * as path from "path";
 
 /**
  * Concrete class for the `/` route.
@@ -8,6 +10,9 @@ import * as ts from "typescript";
  * @class IndexRoute
  */
 export class IndexRoute extends BaseRoute {
+    private static defaultSource: string =
+        '' + fs.readFileSync(path.join(__dirname, '../../samples/bone.js'));
+
     /**
      * Create the routes.
      *
@@ -16,8 +21,8 @@ export class IndexRoute extends BaseRoute {
      * @static
      */
     public static create(router: Router) {
-        router.get("/", (req: Request, res: Response, next: NextFunction) => {
-            new IndexRoute().index(req, res, next);
+        router.get("/", (req: Request, res: Response, _next: NextFunction) => {
+            new IndexRoute().renderGL(req, res);
         });
 
         router.post("/", (req: Request, res: Response) => {
@@ -36,20 +41,6 @@ export class IndexRoute extends BaseRoute {
     }
 
     /**
-     * The home page route.
-     *
-     * @class IndexRoute
-     * @method index
-     * @param {Request} req The express Request object.
-     * @param {Response} res The express Response object.
-     * @param {NextFunction} next Execute the next method.
-     */
-    public index(req: Request, res: Response, next: NextFunction) {
-        const options: Object = {};
-        this.render(req, res, "index", options);
-    }
-
-    /**
      * Renders the CalderGL and displays it in the canvas.
      *
      * @class IndexRoute
@@ -58,22 +49,14 @@ export class IndexRoute extends BaseRoute {
      * @param {Response} res The express Response object.
      */
     public renderGL(req: Request, res: Response) {
+        console.log(req.body.source);
+        const source = req.body.source || IndexRoute.defaultSource;
+
         // Transpile the code into ES5 JavaScript
-        let es5 = ts.transpile(req.body.code);
-
-        // Update console.log to append the logged output
-        let logs_array = [];
-        const default_log = console.log;
-        console.log = (value) => {
-            default_log(value);
-            logs_array.push(value);
-        };
-
-        // Evaluate the ES5 code
-        eval(es5);
+        const { code } = transform(source, { sourceType: 'script' });
 
         // Pass in an object to the view to update content
-        const options: Object = { code: req.body.code, logs: logs_array.join("\n") };
+        const options: Object = { source, code };
 
         // Render the index page
         this.render(req, res, "index", options);

@@ -1,3 +1,5 @@
+const webpackConfig = require('./webpack.config');
+
 module.exports = function(grunt) {
   "use strict";
 
@@ -43,11 +45,16 @@ module.exports = function(grunt) {
         files: ["public/views/**/*.pug"],
         tasks: ["copy"]
       }
+    },
+    webpack: {
+      prod: webpackConfig,
+      dev: webpackConfig
     }
   });
 
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-ts");
-  grunt.registerTask("default", ["copy", "ts"]);
+  grunt.loadNpmTasks("grunt-webpack");
+  grunt.registerTask("default", ["ts", "copy", "webpack"]);
 };
