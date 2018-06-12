@@ -2,7 +2,9 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: {
-    client: './src/frontend/client.ts'
+    client: './src/frontend/client.ts',
+    ace: './node_modules/ace-builds/src-min-noconflict/ace.js',
+    'mode-javascript': './node_modules/ace-builds/src-min-noconflict/mode-javascript.js',
   },
   output: {
     path: __dirname + '/dist/public',
@@ -17,4 +19,4 @@ module.exports = {
       { test: /\.tsx?$/, loader: "ts-loader" }
     ]
   }
-}
+};

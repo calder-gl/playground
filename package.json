@@ -10,10 +10,11 @@
     "server": "node ./bin/run"
   },
   "dependencies": {
+    "ace-builds": "^1.3.3",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
     "body-parser": "^1.18.2",
-    "calder-gl": "calder-gl/calder",
+    "calder-gl": "calder-gl/calder#master",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "lodash": "^4.17.10",

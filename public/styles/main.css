@@ -17,3 +17,7 @@ pre {
 pre > code {
     width: 100%;
 }
+
+#source {
+    min-height: 400px;
+}
