@@ -793,9 +793,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder#install-script:
+calder-gl@calder-gl/calder:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/d856d3f901943c86376cdad00f7d674bba68c190"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/1c97c5bf47476e01b1c3d55d71fb8df17097b729"
   dependencies:
     gl-matrix "^2.5.1"
     lodash "^4.17.10"
@@ -1725,7 +1725,7 @@ getobject@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/getobject/-/getobject-0.1.0.tgz#047a449789fa160d018f5486ed91320b6ec7885c"
 
-gl-matrix@^2.5.1, gl-matrix@^2.6.1:
+gl-matrix@^2.5.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-2.6.1.tgz#1bc7f7b396f4ae80abdb4db9a98cd07d170b9004"
 

@@ -1,20 +1,26 @@
-// Your Calder code here
+/**
+ * Write your Calder code here
+ */
 
+// Create a 'bone'
 const bone = Armature.define((root) => {
-    root.createPoint('base', vec3.fromValues(0, 0, 0));
-    root.createPoint('tip', vec3.fromValues(0, 1, 0));
+  root.createPoint('base', { x: 0, y: 0, z: 0 });
+  root.createPoint('tip',  { x: 0, y: 1, z: 0 });
 });
 
+// Stick the 'base' of node2 to the 'tip' of node1
 const node1 = bone();
 const node2 = bone();
 node2.point('base').stickTo(node1.point('tip'));
 
-renderer.camera.moveTo(vec3.fromValues(0, 0, 8));
-renderer.camera.lookAt(vec3.fromValues(2, 2, -4));
+// Move the camera, and look at a certain point
+renderer.camera.moveTo({ x: 0, y: 0, z: 8 });
+renderer.camera.lookAt({ x: 2, y: 2, z: -4 });
 
+// Render objects 'node1' with 'debugParams'
 renderer.eachFrame(() => {
-    return {
-        objects: [node1],
-        debugParams: { drawAxes: true, drawArmatureBones: true }
-    };
+  return {
+    objects: [node1],
+    debugParams: { drawAxes: true, drawArmatureBones: true }
+  };
 });

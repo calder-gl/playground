@@ -1,13 +1,7 @@
 import * as calder from 'calder-gl';
-import * as glmatrix from 'gl-matrix';
 
 for (const key in calder) {
-    (<any> window)[key] = calder[key];
-}
-
-// TODO: remove this in the future when we have APIs in calder for everything
-for (const key in glmatrix) {
-    (<any> window)[key] = glmatrix[key];
+    (<any>window)[key] = calder[key];
 }
 
 const logElement = document.getElementById('log');
@@ -31,7 +25,7 @@ console.log = function() {
     oldLog.apply(console, arguments);
 };
 
-window.onerror = function(e: Event, _source: string, _fileno: number, _colno: number) {
+window.onerror = (e: Event, _source: string, _fileno: number, _colno: number) => {
     console.log(e);
 };
 
