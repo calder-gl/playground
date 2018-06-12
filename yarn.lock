@@ -254,6 +254,10 @@ accepts@~1.3.3, accepts@~1.3.5:
     mime-types "~2.1.18"
     negotiator "0.6.1"
 
+ace-builds@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/ace-builds/-/ace-builds-1.3.3.tgz#c9746028d1485e5d7595fb2e825e665bd6648970"
+
 acorn-dynamic-import@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-3.0.0.tgz#901ceee4c7faaef7e07ad2a47e890675da50a278"
@@ -793,7 +797,7 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder:
+calder-gl@calder-gl/calder#master:
   version "0.0.0"
   resolved "https://codeload.github.com/calder-gl/calder/tar.gz/1c97c5bf47476e01b1c3d55d71fb8df17097b729"
   dependencies:
