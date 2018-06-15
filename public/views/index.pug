@@ -14,16 +14,23 @@ html
       hr
 
       .row
-        .column.column-50
+        .column
           h2 Calder Code
-          form(method='POST' action='/')
+          form#state(method='POST' action='/')
             #source
             textarea(name='source')= source
+            input#seed0(type='hidden' name='seed0' value=seeds[0])
+            input#seed1(type='hidden' name='seed1' value=seeds[1])
+            input#seed2(type='hidden' name='seed2' value=seeds[2])
+            input#seed3(type='hidden' name='seed3' value=seeds[3])
+            input#focused(type='hidden' name='focused' value=focused)
             input(type='submit' name='Run')
 
-        .column.column-50
+        .column.fixed
           h2 Compiled WebGL
           div#webgl
+          div#toolbar
+            button#shuffle Shuffle random seeds
 
       .row
         pre

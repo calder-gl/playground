@@ -3,11 +3,24 @@ textarea {
     min-height: 400px;
 }
 
-canvas {
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+#webgl {
     min-height: 400px;
-    width: 100%;
+    width: 400px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#webgl > div {
+  cursor: pointer;
+  transition: all ease 0.1s;
+  margin: 0 20px 20px 0;
+}
+
+#webgl > div:hover {
+  transform: scale(1.05);
 }
 
 pre {
@@ -20,4 +33,9 @@ pre > code {
 
 #source {
     min-height: 400px;
+}
+
+.column.fixed {
+    width: auto;
+    flex: 0;
 }
