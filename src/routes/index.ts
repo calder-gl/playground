@@ -3,6 +3,7 @@ import { BaseRoute } from "./base_route";
 import { transform } from 'babel-core';
 import  * as fs from 'fs';
 import * as path from "path";
+import { range } from 'lodash';
 
 /**
  * Concrete class for the `/` route.
@@ -11,7 +12,7 @@ import * as path from "path";
  */
 export class IndexRoute extends BaseRoute {
     private static defaultSource: string =
-        '' + fs.readFileSync(path.join(__dirname, '../../samples/bone.js'));
+        '' + fs.readFileSync(path.join(__dirname, '../../samples/tree.js'));
 
     /**
      * Create the routes.
@@ -51,12 +52,14 @@ export class IndexRoute extends BaseRoute {
     public renderGL(req: Request, res: Response) {
         console.log(req.body.source);
         const source = req.body.source || IndexRoute.defaultSource;
+        const focused = req.body.focused || 0;
+        const seeds = range(4).map((i: number) => req.body[`seed${i}`] || Math.random() * 100000);
 
         // Transpile the code into ES5 JavaScript
         const { code } = transform(source, { sourceType: 'script' });
 
         // Pass in an object to the view to update content
-        const options: Object = { source, code };
+        const options: Object = { source, code, seeds, focused };
 
         // Render the index page
         this.render(req, res, "index", options);
