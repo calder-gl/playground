@@ -799,7 +799,7 @@ cache-base@^1.0.1:
 
 calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/1c97c5bf47476e01b1c3d55d71fb8df17097b729"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/6dae8d9fd073fb5e1c2ff72991da07d53eb0d886"
   dependencies:
     gl-matrix "^2.5.1"
     lodash "^4.17.10"
@@ -3501,6 +3501,10 @@ registry-url@^3.0.3:
   dependencies:
     rc "^1.0.1"
 
+regl@^1.3.1:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/regl/-/regl-1.3.6.tgz#d69967c577208ce69c2de7989c6188d565b242a0"
+
 regl@regl-project/regl:
   version "1.3.6"
   resolved "https://codeload.github.com/regl-project/regl/tar.gz/3dc66c5d52771e79562bbf28818250329c8f422e"
@@ -4133,7 +4137,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.6.1, typescript@^2.6.2:
+typescript@^2.6.1:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
+
+typescript@^2.6.2:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.1.tgz#fdb19d2c67a15d11995fd15640e373e09ab09961"
 
