@@ -2,16 +2,16 @@
  * Write your Calder code here
  */
 
-const light1 = {
-    lightPosition: [10, 10, 10],
-    lightColor: [0.3, 0.3, 0.3],
-    lightIntensity: 256
-};
-const light2 = {
-    lightPosition: [700, 500, 50],
-    lightColor: [0.3, 0.3, 0.3],
-    lightIntensity: 100
-};
+const light1 = new Light({
+    position: { x: 10, y: 10, z: 10 },
+    color: RGBColor.fromHex('#FFFFFF'),
+    intensity: 256
+});
+const light2 = new Light({
+    position: { x: 700, y: 500, z: 50 },
+    color: RGBColor.fromHex('#FFFFFF'),
+    intensity: 100
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Step 1: create geometry
@@ -75,18 +75,7 @@ const tree = treeGen
 // Step 3: set up renderer
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-document.body.appendChild(renderer.stage);
-
 renderer.camera.moveTo({ x: 0, y: 0, z: 8 });
 renderer.camera.lookAt({ x: 2, y: 2, z: -4 });
 
-// Draw the armature
-const draw = () => {
-    return {
-        objects: [tree],
-        debugParams: { drawAxes: true, drawArmatureBones: false }
-    };
-};
-
-// Apply the constraints each frame.
-renderer.eachFrame(draw);
+renderer.draw([tree], {drawAxes: true, drawArmatureBones: true});

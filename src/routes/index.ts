@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { BaseRoute } from "./base_route";
-import { transform } from 'babel-core';
-import  * as fs from 'fs';
+import * as fs from 'fs';
 import * as path from "path";
-import { range } from 'lodash';
 
 /**
  * Concrete class for the `/` route.
@@ -12,7 +10,7 @@ import { range } from 'lodash';
  */
 export class IndexRoute extends BaseRoute {
     private static defaultSource: string =
-        '' + fs.readFileSync(path.join(__dirname, '../../samples/tree.js'));
+        '' + fs.readFileSync(path.join(__dirname, '../../samples/basic.js'));
 
     /**
      * Create the routes.
@@ -50,16 +48,10 @@ export class IndexRoute extends BaseRoute {
      * @param {Response} res The express Response object.
      */
     public renderGL(req: Request, res: Response) {
-        console.log(req.body.source);
         const source = req.body.source || IndexRoute.defaultSource;
-        const focused = req.body.focused || 0;
-        const seeds = range(4).map((i: number) => req.body[`seed${i}`] || Math.random() * 100000);
-
-        // Transpile the code into ES5 JavaScript
-        const { code } = transform(source, { sourceType: 'script' });
 
         // Pass in an object to the view to update content
-        const options: Object = { source, code, seeds, focused };
+        const options: Object = { source };
 
         // Render the index page
         this.render(req, res, "index", options);
