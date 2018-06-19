@@ -110,6 +110,7 @@ runBtn.addEventListener('click', () => {
         console.log(e);
     }
 });
+runBtn.click();
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
     if (event.key == 'r' && event.ctrlKey) {
@@ -118,4 +119,4 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
         return false;
     }
     return true;
-})
+});
