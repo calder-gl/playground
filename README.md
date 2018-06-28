@@ -25,3 +25,12 @@ yarn server
 ```bash
 open http://localhost:3000
 ```
+
+## Updating Calder
+To use a newer version of Calder in this repo, run the following:
+
+```bash
+yarn upgrade
+```
+
+This will change the commit for `calder#master` in `yarn.lock`, which you can then commit.

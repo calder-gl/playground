@@ -1,4 +1,5 @@
 import * as calder from 'calder-gl';
+import * as lodash from 'lodash';
 import { Completion } from './Completion';
 const randomSeed = require('random-seed');
 import { range } from 'lodash';
@@ -9,6 +10,10 @@ import 'brace/ext/language_tools';
 
 for (const key in calder) {
     (<any>window)[key] = calder[key];
+}
+
+for (const key in lodash) {
+    (<any>window)[key] = lodash[key];
 }
 
 const logElement = <HTMLDivElement> document.getElementById('log');
