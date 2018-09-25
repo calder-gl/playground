@@ -819,7 +819,7 @@ cache-base@^1.0.1:
 
 calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/b454eaecf42b2bfe5c5e09a412c15258a8f3f6ae"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/a42004e0f87633f28f1b90eacc7e2da52fbaeb0f"
   dependencies:
     "@types/gl-matrix" "^2.4.0"
     "@types/jest" "~22.2.2"
@@ -1905,8 +1905,8 @@ grunt-legacy-util@~1.1.1:
     which "~1.3.0"
 
 grunt-ts@^6.0.0-beta.17:
-  version "6.0.0-beta.19"
-  resolved "https://registry.yarnpkg.com/grunt-ts/-/grunt-ts-6.0.0-beta.19.tgz#387189b027fb2e0fafaea85f06ba8ef8961adf89"
+  version "6.0.0-beta.20"
+  resolved "https://registry.yarnpkg.com/grunt-ts/-/grunt-ts-6.0.0-beta.20.tgz#3d1282b1cdc5fa3ab78fab75670c6cbed05faecb"
   dependencies:
     chokidar "^1.6.1"
     csproj2ts "^1.1.0"
@@ -4102,8 +4102,8 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
 ts-loader@^4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-4.4.1.tgz#c93a46eea430ebce1f790dfe438caefb8670d365"
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-4.4.2.tgz#778d4464b24436873c78f7f9e914d88194c2a248"
   dependencies:
     chalk "^2.3.0"
     enhanced-resolve "^4.0.0"
@@ -4378,8 +4378,8 @@ webpack-sources@^1.0.1, webpack-sources@^1.1.0:
     source-map "~0.6.1"
 
 webpack@^4.12.0:
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.12.0.tgz#14758e035ae69747f68dd0edf3c5a572a82bdee9"
+  version "4.12.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.12.2.tgz#d2b8418eb40cedcbf2c1f5905d23a99546011ce9"
   dependencies:
     "@webassemblyjs/ast" "1.5.12"
     "@webassemblyjs/helper-module-context" "1.5.12"

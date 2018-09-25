@@ -10,12 +10,12 @@ const bone = Armature.define((root) => {
 
 const node = bone();
 
-const light1 = new Light({
+const light = Light.create({
     position: { x: 10, y: 10, z: 10 },
     color: RGBColor.fromHex('#FFFFFF'),
-    intensity: 256
+    strength: 300
 });
-renderer.addLight(light1);
+renderer.addLight(light);
 
 renderer.camera.moveTo({ x: 0, y: 0, z: 8 });
 renderer.camera.lookAt({ x: 2, y: 2, z: -4 });
