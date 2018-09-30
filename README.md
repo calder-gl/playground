@@ -8,6 +8,11 @@
 yarn install
 ```
 
+```bash
+# Needed to get the correct version of `calder-gl`.
+yarn upgrade
+```
+
 2. Compile the TypeScript:
 
 ```bash
