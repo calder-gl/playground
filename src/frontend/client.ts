@@ -1,12 +1,15 @@
 import * as calder from 'calder-gl';
 import * as lodash from 'lodash';
-import { Completion } from './Completion';
-const randomSeed = require('random-seed');
-import { range } from 'lodash';
-import { transform } from '@babel/standalone';
-import * as ace from 'brace';
-import 'brace/mode/javascript';
-import 'brace/ext/language_tools';
+
+import { state } from './state';
+
+import { addCostFn, addCostFunctionViz } from './costFn';
+import { addGenerator } from './generator';
+import { addModel } from './model';
+import { ambientLightColor, renderer } from './renderer';
+
+
+// Add globals for use in user code
 
 for (const key in calder) {
     (<any>window)[key] = calder[key];
@@ -17,8 +20,6 @@ for (const key in lodash) {
 }
 
 const logElement = <HTMLDivElement> document.getElementById('log');
-const codeElement = <HTMLScriptElement> document.getElementById('code');
-const webglElement = <HTMLDivElement> document.getElementById('webgl');
 const shuffleBtn = <HTMLButtonElement> document.getElementById('shuffle');
 const runBtn = <HTMLButtonElement> document.getElementById('run');
 
@@ -32,90 +33,30 @@ window.onerror = (e: Event, _source: string, _fileno: number, _colno: number) =>
     console.log(e);
 };
 
-
-const editor = ace.edit('source');
-editor.getSession().setValue(codeElement.innerText);
-editor.getSession().setMode('ace/mode/javascript');
-ace.acequire('ace/ext/language_tools').addCompleter(new Completion());
-editor.setOptions({
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: true
-});
-
-const state: {
-    render: (seed: number, size: number, handler: () => void) => void;
-    seeds: number[];
-    focused: number | null;
-    updateRenderView: () => void;
-    renderer: calder.Renderer | null;
-} = {
-    render: (_seed, _size, _handler) => {},
-    seeds: range(4).map(() => Math.random() * 10000),
-    focused: 0,
-    updateRenderView: () => {
-
-        const oldRandom = Math.random;
-
-        while (webglElement.firstChild) {
-            webglElement.removeChild(webglElement.firstChild);
-        }
-
-        if (state.focused === null) {
-            state.seeds.forEach((seed, i) => state.render(seed, 150, () => {
-                state.focused = i;
-                state.updateRenderView();
-            }));
-        } else {
-            state.render(state.seeds[state.focused], 400, () => {
-                state.focused = null;
-                state.updateRenderView();
-            });
-        }
-
-        Math.random = oldRandom;
-    },
-    renderer: null
+window.onbeforeunload = () => {
+    return 'Are you sure you want to leave?';
 };
 
+
+// Set initial state
+addCostFn();
+addCostFunctionViz();
+addGenerator();
+addModel();
+
+
+// Add UI hooks
+
 shuffleBtn.addEventListener('click', () => {
-    state.seeds = range(4).map(() => Math.random() * 10000);
-    state.updateRenderView();
+    addCostFn();
+    addModel();
 });
 
 runBtn.addEventListener('click', () => {
-    try {
-        const source = editor.getSession().getValue();
-        const { code } = transform(source, { sourceType: 'script' });
-
-        const setup = new Function('renderer', code);
-
-        state.render = (seed, size, handler) => {
-            const generator = randomSeed.create();
-            generator.seed(seed);
-            Math.random = () => generator.random();
-
-            if (state.renderer) {
-                state.renderer.destroy();
-            }
-            state.renderer = new calder.Renderer({
-                width: size,
-                height: size,
-                maxLights: 10,
-                ambientLightColor: calder.RGBColor.fromHex('#333333')
-            });
-            setup(state.renderer);
-
-            webglElement.appendChild(state.renderer.stage);
-            state.renderer.stage.addEventListener('click', handler);
-        };
-
-        state.updateRenderView();
-
-    } catch (e) {
-        console.log(e);
-    }
+    addCostFn();
+    addGenerator();
+    addModel();
 });
-runBtn.click();
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
     if (event.key == 'r' && event.ctrlKey) {
@@ -125,3 +66,36 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
     }
     return true;
 });
+
+
+const webglElement = <HTMLDivElement> document.getElementById('webgl');
+webglElement.appendChild(renderer.stage);
+
+
+// OBJ export
+const exportBtn = document.createElement('button');
+exportBtn.innerText = 'Export .obj';
+exportBtn.addEventListener('click', () => {
+    if (!state.model) {
+        return;
+    }
+
+    const obj = state.model.exportOBJ('calderExport', ambientLightColor);
+
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    // Download obj
+    link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(obj.obj)}`);
+    link.setAttribute('download', 'calderExport.obj');
+    link.click();
+
+    // Download mtl
+    link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(obj.mtl)}`);
+    link.setAttribute('download', 'calderExport.mtl');
+    link.click();
+
+    document.body.removeChild(link);
+});
+document.body.appendChild(exportBtn);
