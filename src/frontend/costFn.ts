@@ -38,10 +38,12 @@ export const addCostFn = () => {
 };
 
 export const addCostFunctionViz = () => {
-    if (state.costFn) {
-        const vectorField = state.costFn.generateVectorField();
-        const guidingCurve = state.costFn.generateGuidingCurve();
-
-        setState({ vectorField, guidingCurve });
+    if (!state.costFn) {
+        return;
     }
+
+    const vectorField = state.costFn.generateVectorField();
+    const guidingCurve = state.costFn.generateGuidingCurve();
+
+    setState({ vectorField, guidingCurve });
 };

@@ -6,10 +6,6 @@ const leafSphere = Shape.sphere(Material.create({ color: leafColor, shininess: 1
 const branchColor = RGBColor.fromRGB(102, 76.5, 76.5);
 const branchShape = Shape.cylinder(Material.create({ color: branchColor, shininess: 1 }));
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Step 2: create armature
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 const bone = Armature.define((root) => {
     root.createPoint('base', { x: 0, y: 0, z: 0 });
     root.createPoint('mid', { x: 0, y: 0.5, z: 0 });
