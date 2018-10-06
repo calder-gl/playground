@@ -7,6 +7,7 @@ import { addCostFn, addCostFunctionViz } from './costFn';
 import { addGenerator } from './generator';
 import { addModel } from './model';
 import { ambientLightColor, renderer } from './renderer';
+import { setupOnscreenInteractions } from './interactions';
 
 
 // Add globals for use in user code
@@ -70,6 +71,8 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 
 const webglElement = <HTMLDivElement> document.getElementById('webgl');
 webglElement.appendChild(renderer.stage);
+
+setupOnscreenInteractions();
 
 
 // OBJ export

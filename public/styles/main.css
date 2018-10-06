@@ -14,13 +14,7 @@ textarea {
 }
 
 #webgl > div {
-  cursor: pointer;
-  transition: all ease 0.1s;
   margin: 0 20px 20px 0;
-}
-
-#webgl > div:hover {
-  transform: scale(1.05);
 }
 
 pre {
