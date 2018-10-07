@@ -30,7 +30,7 @@ const draw = () => {
             drawAxes: true,
             drawArmatureBones: false,
             drawVectorField: state.vectorField,
-            drawGuidingCurve: state.guidingCurve
+            drawGuidingCurve: state.guidingCurves
         }
     };
 };

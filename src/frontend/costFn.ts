@@ -6,7 +6,7 @@ import Bezier = require('bezier-js');
 import { setState, state } from './state';
 
 const scale: [number, number, number] = [0, 0, 100];
-const guidingVectors = [
+const costFnParams = [
     {
         bezier: new Bezier([
             { x: 0, y: 0, z: 0 },
@@ -32,18 +32,25 @@ const guidingVectors = [
 ]
 
 export const addCostFn = () => {
-    const costFn = calder.CostFunction.guidingVectors(guidingVectors);
+    const costFn = calder.CostFunction.guidingVectors(costFnParams);
 
-    setState({ costFn });
+    setState({ costFnParams, costFn });
 };
 
 export const addCostFunctionViz = () => {
-    if (!state.costFn) {
+    const { costFn, costFnParams } = state;
+    if (!costFn || !costFnParams) {
         return;
     }
 
-    const vectorField = state.costFn.generateVectorField();
-    const guidingCurve = state.costFn.generateGuidingCurve();
+    const vectorField = costFn.generateVectorField();
+    const guidingCurves = costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
+        return {
+            path,
+            selected: false,
+            bezier: costFnParams[index].bezier
+        };
+    });
 
-    setState({ vectorField, guidingCurve });
+    setState({ vectorField, guidingCurves });
 };

@@ -822,9 +822,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder#master:
+calder-gl@calder-gl/calder#selectable-curves:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/e7153c8b6e62887ab0dde6adf2efb9650cf96738"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/8bb007f6e3db6ce923a4fb35c7cd315eb1a4a121"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"

@@ -1,20 +1,32 @@
-import { Camera, vec3ToVector } from 'calder-gl';
+import { Camera, GuidingCurveInfo, vec3ToVector } from 'calder-gl';
 import { renderer } from './renderer';
+import { state } from './state'
+import { addCostFn, addCostFunctionViz } from './costFn';
+import { addModel } from './model';
 import { mat4, quat, vec3, vec4 } from 'gl-matrix';
 
+// tslint:disable-next-line:import-name
+import Bezier = require('bezier-js');
+
 enum ControlMode {
-    SELECT_CURVE,
+    DRAG_CURVE,
     DRAW_CURVE,
     CAMERA_ROTATE,
     CAMERA_MOVE
 }
 
-type ControlState = {
+type ControlcontrolState = {
     mode: ControlMode;
+    selectedCurve: number | null;
+    selectedHandle: number | null;
+    dragged: boolean;
 };
 
-const state: ControlState = {
-    mode: ControlMode.CAMERA_ROTATE
+const controlState: ControlcontrolState = {
+    mode: ControlMode.CAMERA_ROTATE,
+    selectedCurve: null,
+    selectedHandle: null,
+    dragged: false
 };
 
 enum MouseButton {
@@ -23,24 +35,47 @@ enum MouseButton {
     RIGHT = 2
 }
 
+const MIN_SQUARED_DISTANCE = 16;
+
 function handleMouseDown(event: MouseEvent) {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+
+    controlState.dragged = false;
 
     const button = <MouseButton> event.button;
 
     if (button === MouseButton.LEFT) {
         if (event.shiftKey) {
-            state.mode = ControlMode.CAMERA_MOVE;
+            controlState.mode = ControlMode.CAMERA_MOVE;
         } else {
-            state.mode = ControlMode.CAMERA_ROTATE;
-        }
+            controlState.selectedHandle = null;
+            let closestDistance = Infinity;
 
-    // TODO think through other interactions
-    } else if (button === MouseButton.MIDDLE) {
-        state.mode = ControlMode.DRAW_CURVE;
-    } else if (button === MouseButton.RIGHT) {
-        state.mode = ControlMode.SELECT_CURVE;
+            if (state.guidingCurves && controlState.selectedCurve !== null) {
+                const bounds = renderer.stage.getBoundingClientRect();
+                const x = event.clientX - bounds.left;
+                const y = event.clientY - bounds.top;
+
+                state.guidingCurves[controlState.selectedCurve].bezier.points.forEach((point, index) => {
+                    const screenPoint = renderer.pointInScreenSpace(point);
+                    const dx = screenPoint.x - x;
+                    const dy = screenPoint.y - y;
+                    const distance = dx * dx + dy * dy;
+
+                    if (distance < MIN_SQUARED_DISTANCE && distance < closestDistance) {
+                        closestDistance = distance;
+                        controlState.selectedHandle = index;
+                    }
+                });
+            }
+
+            if (controlState.selectedHandle !== null) {
+                controlState.mode = ControlMode.DRAG_CURVE;
+            } else {
+                controlState.mode = ControlMode.CAMERA_ROTATE;
+            }
+        }
     }
 
     event.stopPropagation();
@@ -50,6 +85,29 @@ function handleMouseDown(event: MouseEvent) {
 function handleMouseUp(event: MouseEvent) {
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('mouseup', handleMouseUp);
+
+    const { guidingCurves } = state;
+    if (!controlState.dragged && guidingCurves) {
+        const boundingRect = renderer.stage.getBoundingClientRect();
+        const selectedIndex = renderer.findCurveUnderCursor(state.guidingCurves, {
+            x: event.clientX - boundingRect.left,
+            y: event.clientY - boundingRect.top
+        });
+
+        controlState.selectedCurve = null;
+        guidingCurves.forEach((curve: GuidingCurveInfo, index: number) => {
+            curve.selected = index === selectedIndex;
+            if (curve.selected) {
+                controlState.selectedCurve = index;
+            }
+        });
+    }
+
+    if (controlState.mode === ControlMode.DRAG_CURVE) {
+        addCostFn();
+        addCostFunctionViz();
+        addModel();
+    }
 
     event.stopPropagation();
     event.preventDefault();
@@ -61,7 +119,49 @@ const tmpDirection = vec3.create();
 const tmpMat4 = mat4.create();
 
 function handleMouseMove(event: MouseEvent) {
-    if (state.mode === ControlMode.CAMERA_MOVE) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (event.movementX === 0 && event.movementY === 0) {
+        return;
+    }
+
+    controlState.dragged = true;
+
+    if (controlState.mode === ControlMode.DRAG_CURVE) {
+        // Create a direction vector representing the relative movement we want
+        const direction = vec3ToVector(
+            vec3.set(tmpDirection, event.movementX / renderer.width, -event.movementY / renderer.height, 0));
+
+        // Bring the transform into world coordinates by applying the inverse camera transform
+        const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
+        if (inverseTransform && state.guidingCurves && state.costFnParams &&
+                controlState.selectedCurve !== null && controlState.selectedHandle !== null) {
+            const points = state.costFnParams[controlState.selectedCurve].bezier.points;
+
+            const dx = points[controlState.selectedHandle].x - renderer.camera.position[0];
+            const dy = points[controlState.selectedHandle].y - renderer.camera.position[1];
+            const dz = points[controlState.selectedHandle].z - renderer.camera.position[2];
+            const distanceFromCamera = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            const scale = distanceFromCamera * Math.cos(Math.PI / 4);
+
+            vec4.scale(direction, direction, scale);
+            vec4.transformMat4(direction, direction, inverseTransform);
+
+            points[controlState.selectedHandle] = {
+                x: points[controlState.selectedHandle].x + direction[0],
+                y: points[controlState.selectedHandle].y + direction[1],
+                z: points[controlState.selectedHandle].z + direction[2]
+            };
+            const bezier = new Bezier(points);
+
+            state.costFnParams[controlState.selectedCurve].bezier = bezier;
+            state.guidingCurves[controlState.selectedCurve].bezier = bezier;
+            state.guidingCurves[controlState.selectedCurve].path =
+                bezier.getLUT().map((p) => [p.x, p.y, p.z]);
+        }
+
+    } else if (controlState.mode === ControlMode.CAMERA_MOVE) {
         // Create a direction vector representing the relative movement we want
         const direction = vec3ToVector(
             vec3.set(tmpDirection, -event.movementX / 100, event.movementY / 100, 0));
@@ -79,7 +179,7 @@ function handleMouseMove(event: MouseEvent) {
             });
         }
 
-    } else if (state.mode === ControlMode.CAMERA_ROTATE) {
+    } else if (controlState.mode === ControlMode.CAMERA_ROTATE) {
 
         // First rotate around the vertical axis
         renderer.camera.rotateAboutTarget(quat.setAxisAngle(
@@ -111,9 +211,6 @@ function handleMouseMove(event: MouseEvent) {
                 ));
         }
     }
-
-    event.stopPropagation();
-    event.preventDefault();
 }
 
 function handleWheel(event: WheelEvent) {

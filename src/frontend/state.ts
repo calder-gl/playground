@@ -4,9 +4,10 @@ export type State = {
     generator?: calder.Generator;
     source?: string;
     model?: calder.Model;
+    costFnParams?: calder.GuidingCurve[];
     costFn?: calder.CostFn;
     vectorField?: Float32Array;
-    guidingCurve?: [number, number, number][][];
+    guidingCurves?: calder.GuidingCurveInfo[];
     generatorTask?: calder.GeneratorTask;
 };
 
