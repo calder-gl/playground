@@ -129,7 +129,7 @@ function handleMouseMove(event: MouseEvent) {
     controlState.dragged = true;
 
     if (controlState.mode === ControlMode.DRAG_CURVE) {
-        // Create a direction vector representing the relative movement we want
+        // Create a direction vector representing the relative movement we want, normalized to the screen size
         const direction = vec3ToVector(
             vec3.set(tmpDirection, event.movementX / renderer.width, -event.movementY / renderer.height, 0));
 
@@ -138,6 +138,23 @@ function handleMouseMove(event: MouseEvent) {
         if (inverseTransform && state.guidingCurves && state.costFnParams &&
                 controlState.selectedCurve !== null && controlState.selectedHandle !== null) {
             const points = state.costFnParams[controlState.selectedCurve].bezier.points;
+
+            // We need to scale the direction vector so that when the control point moves, it moves the right
+            // amount in screen space. The normalized direction before is implicitly at a distance of 1 away
+            // from the camera (`zNear` in the projection matrix.) We know the position of the point and the
+            // camera, and the camera has a field of view of pi/4, so we can do some trig:
+            //
+            //                           .-X control point
+            //                        .-'  |
+            //         distance    .-'     |
+            //                  .-'        |
+            //               .-'|          |
+            //         h  .-'   |          |
+            //         .-'      |          |
+            // camera X---------+----------+
+            //                  1
+            //
+            // The scaling factor we need is distance/h, and h is 1/cos(pi/4).
 
             const dx = points[controlState.selectedHandle].x - renderer.camera.position[0];
             const dy = points[controlState.selectedHandle].y - renderer.camera.position[1];
@@ -157,6 +174,9 @@ function handleMouseMove(event: MouseEvent) {
 
             state.costFnParams[controlState.selectedCurve].bezier = bezier;
             state.guidingCurves[controlState.selectedCurve].bezier = bezier;
+
+            // Update the path that gets visualized without replacing the whole cost function yet;
+            // since that's a more expensive operation, we'll do that on mouse up
             state.guidingCurves[controlState.selectedCurve].path =
                 bezier.getLUT().map((p) => [p.x, p.y, p.z]);
         }
