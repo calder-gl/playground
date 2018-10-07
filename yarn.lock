@@ -822,9 +822,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder#camera-methods:
+calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/387eaa3746e74395d1ba60b63687dbb4d6e17610"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/e7153c8b6e62887ab0dde6adf2efb9650cf96738"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"

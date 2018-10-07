@@ -17,15 +17,19 @@ const state: ControlState = {
     mode: ControlMode.CAMERA_ROTATE
 };
 
-const LEFT = 0;
-const MIDDLE = 1;
-const RIGHT = 2;
+enum MouseButton {
+    LEFT = 0,
+    MIDDLE = 1,
+    RIGHT = 2
+}
 
 function handleMouseDown(event: MouseEvent) {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
 
-    if (event.button === LEFT) {
+    const button = <MouseButton> event.button;
+
+    if (button === MouseButton.LEFT) {
         if (event.shiftKey) {
             state.mode = ControlMode.CAMERA_MOVE;
         } else {
@@ -33,9 +37,9 @@ function handleMouseDown(event: MouseEvent) {
         }
 
     // TODO think through other interactions
-    } else if (event.button === MIDDLE) {
+    } else if (button === MouseButton.MIDDLE) {
         state.mode = ControlMode.DRAW_CURVE;
-    } else if (event.button === RIGHT) {
+    } else if (button === MouseButton.RIGHT) {
         state.mode = ControlMode.SELECT_CURVE;
     }
 
@@ -55,6 +59,7 @@ const tmpQuat = quat.create();
 const tmpVec3 = vec3.create();
 const tmpDirection = vec3.create();
 const tmpMat4 = mat4.create();
+
 function handleMouseMove(event: MouseEvent) {
     if (state.mode === ControlMode.CAMERA_MOVE) {
         // Create a direction vector representing the relative movement we want
