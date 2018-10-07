@@ -85,8 +85,8 @@
     "@types/serve-static" "*"
 
 "@types/gl-matrix@^2.4.0":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@types/gl-matrix/-/gl-matrix-2.4.3.tgz#a0125231172395a6871127954b2f83e330161417"
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@types/gl-matrix/-/gl-matrix-2.4.4.tgz#e9d06dc5552102eb6ced7beb78ceb3290b229959"
 
 "@types/jest@~22.2.2":
   version "22.2.3"
@@ -824,7 +824,7 @@ cache-base@^1.0.1:
 
 calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/37a2bc7ca9fbcc466226b93873f7d0267efb3295"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/e7153c8b6e62887ab0dde6adf2efb9650cf96738"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
@@ -1612,8 +1612,8 @@ findup-sync@~0.3.0:
     glob "~5.0.0"
 
 flatmap-stream@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/flatmap-stream/-/flatmap-stream-0.1.0.tgz#ed54e01422cd29281800914fcb968d58b685d5f1"
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/flatmap-stream/-/flatmap-stream-0.1.1.tgz#d34f39ef3b9aa5a2fc225016bd3adf28ac5ae6ea"
 
 flush-write-stream@^1.0.0:
   version "1.0.3"
@@ -1716,7 +1716,7 @@ getobject@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/getobject/-/getobject-0.1.0.tgz#047a449789fa160d018f5486ed91320b6ec7885c"
 
-gl-matrix@^2.5.1:
+gl-matrix@^2.5.1, gl-matrix@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-2.8.1.tgz#1c7873448eac61d2cd25803a074e837bd42581a3"
 
@@ -3680,8 +3680,8 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
 spdx-correct@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-3.0.1.tgz#434434ff9d1726b4d9f4219d1004813d80639e30"
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/spdx-correct/-/spdx-correct-3.0.2.tgz#19bb409e91b47b1ad54159243f7312a858db3c2e"
   dependencies:
     spdx-expression-parse "^3.0.0"
     spdx-license-ids "^3.0.0"
@@ -4072,8 +4072,8 @@ undefsafe@^2.0.2:
     debug "^2.2.0"
 
 underscore.string@~3.3.4:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/underscore.string/-/underscore.string-3.3.4.tgz#2c2a3f9f83e64762fdc45e6ceac65142864213db"
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/underscore.string/-/underscore.string-3.3.5.tgz#fc2ad255b8bd309e239cbc5816fd23a9b7ea4023"
   dependencies:
     sprintf-js "^1.0.3"
     util-deprecate "^1.0.2"
