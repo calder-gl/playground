@@ -1,1 +1,0 @@
-src/frontend/client.ts src/frontend/Completion.ts src/frontend/costFn.ts src/frontend/editor.ts src/frontend/generator.ts src/frontend/interactions.ts src/frontend/model.ts src/frontend/renderer.ts src/frontend/state.ts src/routes/base_route.ts src/routes/index.ts src/server.ts --removeComments --rootDir src --target ES6 --module commonjs --outDir ./dist
