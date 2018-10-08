@@ -13,10 +13,6 @@ textarea {
     justify-content: center;
 }
 
-#webgl > div {
-  margin: 0 20px 20px 0;
-}
-
 pre {
     width: 100%;
 }
@@ -34,6 +30,39 @@ pre > code {
     flex: 0;
 }
 
-.hidden {
-    display: none;
+#cost {
+    transition: opacity ease 0.2s;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls .input {
+    display: flex;
+    flex-direction: row;
+}
+
+.disabled {
+    opacity: 0.5;
+}
+
+label {
+    font-weight: lighter;
+    width: 180px;
+    padding: 0.6rem 0;
+}
+
+input {
+    flex: 1 1;
+    margin-left: 5px;
+}
+
+.group {
+    flex: 1;
+    display: flex;
+}
+
+#toolbar button {
+    margin-right: 5px;
 }

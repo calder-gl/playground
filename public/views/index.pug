@@ -17,31 +17,29 @@ html
         .column
           h2 Calder Code
           #source
-          button#run Run (Ctrl-R)
+          div#toolbar.controls
+            button#run Run (Ctrl-R)
+            button#export Export .obj
+          pre
+            code#log
 
         .column.fixed
           h2 Compiled WebGL
           div#webgl
-          div#toolbar
-            button#shuffle Shuffle random seeds
-            button#export Export .obj
-          div#cost.hidden
-            div.row
+
+          div#cost.disabled.controls
+            div.input
               label Distance multiplier
               div.group
-                input#distance1(type=number)
-                input#distance2(type=number)
-                input#distance3(type=number)
-            div.row
+                input#distance1(type=number, disabled)
+                input#distance2(type=number, disabled)
+                input#distance3(type=number, disabled)
+            div.input
               label Alignment multiplier
-              input#alignmentMultiplier(type=number)
-            div.row
+              input#alignmentMultiplier(type=number, disabled)
+            div.input
               label Alignment offset
-              input#alignmentOffset(type=number)
-
-      .row
-        pre
-          code#log
+              input#alignmentOffset(type=number, disabled)
 
     script#code(type='x-code')!= source
     script(src='js/client.js')

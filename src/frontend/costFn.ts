@@ -74,14 +74,20 @@ onChange('selectedCurve', () => {
     }
 
     if (selectedCurve !== null && selectedCurve !== undefined) {
-        costControls.classList.remove('hidden');
+        costControls.classList.remove('disabled');
+        distanceMultiplierControls.forEach((control) => control.disabled = false);
+        alignmentMultiplierControl.disabled = false;
+        alignmentOffsetControl.disabled = false;
 
         distanceMultiplierControls.forEach(
             (control, i) => control.value = costFnParams[selectedCurve].distanceMultiplier[i]);
         alignmentMultiplierControl.value = costFnParams[selectedCurve].alignmentMultiplier;
         alignmentOffsetControl.value = costFnParams[selectedCurve].alignmentOffset;
     } else {
-        costControls.classList.add('hidden');
+        costControls.classList.add('disabled');
+        distanceMultiplierControls.forEach((control) => control.disabled = true);
+        alignmentMultiplierControl.disabled = true;
+        alignmentOffsetControl.disabled = true;
     }
 });
 
