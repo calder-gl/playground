@@ -1,3 +1,7 @@
+.container {
+    padding: 20px;
+}
+
 textarea {
     font-family: monospace;
     min-height: 400px;
@@ -55,12 +59,36 @@ label {
 
 input {
     flex: 1 1;
-    margin-left: 5px;
+    padding: 5px;
 }
 
 .group {
     flex: 1;
     display: flex;
+}
+
+.endpoint {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.num {
+    display: flex;
+    flex-direction: column;
+}
+
+.num span {
+    text-align: center;
+}
+
+.group span {
+    padding: 5px;
+}
+
+.num span.description {
+    font-weight: lighter;
+    font-size: 0.2em;
 }
 
 #toolbar button {
