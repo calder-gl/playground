@@ -24,6 +24,20 @@ html
           div#webgl
           div#toolbar
             button#shuffle Shuffle random seeds
+            button#export Export .obj
+          div#cost.hidden
+            div.row
+              label Distance multiplier
+              div.group
+                input#distance1(type=number)
+                input#distance2(type=number)
+                input#distance3(type=number)
+            div.row
+              label Alignment multiplier
+              input#alignmentMultiplier(type=number)
+            div.row
+              label Alignment offset
+              input#alignmentOffset(type=number)
 
       .row
         pre

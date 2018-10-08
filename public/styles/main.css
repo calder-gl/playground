@@ -33,3 +33,7 @@ pre > code {
     width: auto;
     flex: 0;
 }
+
+.hidden {
+    display: none;
+}

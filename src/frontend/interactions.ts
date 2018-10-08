@@ -1,6 +1,6 @@
 import { Camera, GuidingCurveInfo, vec3ToVector } from 'calder-gl';
 import { renderer } from './renderer';
-import { state } from './state'
+import { setState, state } from './state'
 import { addCostFn, addCostFunctionViz } from './costFn';
 import { addModel } from './model';
 import { mat4, quat, vec3, vec4 } from 'gl-matrix';
@@ -17,14 +17,12 @@ enum ControlMode {
 
 type ControlcontrolState = {
     mode: ControlMode;
-    selectedCurve: number | null;
     selectedHandle: number | null;
     dragged: boolean;
 };
 
 const controlState: ControlcontrolState = {
     mode: ControlMode.CAMERA_ROTATE,
-    selectedCurve: null,
     selectedHandle: null,
     dragged: false
 };
@@ -52,12 +50,12 @@ function handleMouseDown(event: MouseEvent) {
             controlState.selectedHandle = null;
             let closestDistance = Infinity;
 
-            if (state.guidingCurves && controlState.selectedCurve !== null) {
+            if (state.guidingCurves && state.selectedCurve !== null && state.selectedCurve !== undefined) {
                 const bounds = renderer.stage.getBoundingClientRect();
                 const x = event.clientX - bounds.left;
                 const y = event.clientY - bounds.top;
 
-                state.guidingCurves[controlState.selectedCurve].bezier.points.forEach((point, index) => {
+                state.guidingCurves[state.selectedCurve].bezier.points.forEach((point, index) => {
                     const screenPoint = renderer.pointInScreenSpace(point);
                     const dx = screenPoint.x - x;
                     const dy = screenPoint.y - y;
@@ -94,13 +92,15 @@ function handleMouseUp(event: MouseEvent) {
             y: event.clientY - boundingRect.top
         });
 
-        controlState.selectedCurve = null;
+        let selectedCurve: number | null = null;
         guidingCurves.forEach((curve: GuidingCurveInfo, index: number) => {
             curve.selected = index === selectedIndex;
             if (curve.selected) {
-                controlState.selectedCurve = index;
+                selectedCurve = index;
             }
         });
+
+        setState({ selectedCurve });
     }
 
     if (controlState.mode === ControlMode.DRAG_CURVE) {
@@ -136,8 +136,8 @@ function handleMouseMove(event: MouseEvent) {
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
         if (inverseTransform && state.guidingCurves && state.costFnParams &&
-                controlState.selectedCurve !== null && controlState.selectedHandle !== null) {
-            const points = state.costFnParams[controlState.selectedCurve].bezier.points;
+                state.selectedCurve !== undefined && state.selectedCurve !== null && controlState.selectedHandle !== null) {
+            const points = state.costFnParams[state.selectedCurve].bezier.points;
 
             // We need to scale the direction vector so that when the control point moves, it moves the right
             // amount in screen space. The normalized direction before is implicitly at a distance of 1 away
@@ -172,12 +172,12 @@ function handleMouseMove(event: MouseEvent) {
             };
             const bezier = new Bezier(points);
 
-            state.costFnParams[controlState.selectedCurve].bezier = bezier;
-            state.guidingCurves[controlState.selectedCurve].bezier = bezier;
+            state.costFnParams[state.selectedCurve].bezier = bezier;
+            state.guidingCurves[state.selectedCurve].bezier = bezier;
 
             // Update the path that gets visualized without replacing the whole cost function yet;
             // since that's a more expensive operation, we'll do that on mouse up
-            state.guidingCurves[controlState.selectedCurve].path =
+            state.guidingCurves[state.selectedCurve].path =
                 bezier.getLUT().map((p) => [p.x, p.y, p.z]);
         }
 
