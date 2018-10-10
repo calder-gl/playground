@@ -21,8 +21,8 @@ for (const key in lodash) {
 }
 
 const logElement = <HTMLDivElement> document.getElementById('log');
-const shuffleBtn = <HTMLButtonElement> document.getElementById('shuffle');
 const runBtn = <HTMLButtonElement> document.getElementById('run');
+const exportBtn = <HTMLButtonElement> document.getElementById('export');
 
 const oldLog = console.log;
 console.log = function() {
@@ -47,12 +47,6 @@ addModel();
 
 
 // Add UI hooks
-
-shuffleBtn.addEventListener('click', () => {
-    addCostFn();
-    addModel();
-});
-
 runBtn.addEventListener('click', () => {
     addCostFn();
     addGenerator();
@@ -76,8 +70,6 @@ setupOnscreenInteractions();
 
 
 // OBJ export
-const exportBtn = document.createElement('button');
-exportBtn.innerText = 'Export .obj';
 exportBtn.addEventListener('click', () => {
     if (!state.model) {
         return;
@@ -101,4 +93,3 @@ exportBtn.addEventListener('click', () => {
 
     document.body.removeChild(link);
 });
-document.body.appendChild(exportBtn);

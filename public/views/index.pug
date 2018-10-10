@@ -17,17 +17,43 @@ html
         .column
           h2 Calder Code
           #source
-          button#run Run (Ctrl-R)
+          div#toolbar.controls
+            button#run Run (Ctrl-R)
+            button#export Export .obj
+          pre
+            code#log
 
         .column.fixed
           h2 Compiled WebGL
           div#webgl
-          div#toolbar
-            button#shuffle Shuffle random seeds
 
-      .row
-        pre
-          code#log
+          div#cost.disabled.controls
+            div.input
+              label Distance multiplier
+              div.group
+                input#distance1(type=number, disabled)
+                span +
+                input#distance2(type=number, disabled)
+                span <i>x</i> +
+                input#distance3(type=number, disabled)
+                span <i>x</i><sup>2</sup>
+            div.input
+              label Alignment multiplier
+              input#alignmentMultiplier(type=number, disabled)
+            div.input
+              label Alignment offset
+              div.group
+                div.endpoint
+                  div.num
+                    span -1
+                    span.description (lenient)
+                  span &le;
+                input#alignmentOffset(type=number, disabled)
+                div.endpoint
+                  span &le;
+                  div.num
+                    span 1
+                    span.description (strict)
 
     script#code(type='x-code')!= source
     script(src='js/client.js')

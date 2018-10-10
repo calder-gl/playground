@@ -1,3 +1,7 @@
+.container {
+    padding: 20px;
+}
+
 textarea {
     font-family: monospace;
     min-height: 400px;
@@ -11,10 +15,6 @@ textarea {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-}
-
-#webgl > div {
-  margin: 0 20px 20px 0;
 }
 
 pre {
@@ -32,4 +32,65 @@ pre > code {
 .column.fixed {
     width: auto;
     flex: 0;
+}
+
+#cost {
+    transition: opacity ease 0.2s;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls .input {
+    display: flex;
+    flex-direction: row;
+}
+
+.disabled {
+    opacity: 0.5;
+}
+
+label {
+    font-weight: lighter;
+    width: 180px;
+    padding: 0.6rem 0;
+}
+
+input {
+    flex: 1 1;
+    padding: 5px;
+}
+
+.group {
+    flex: 1;
+    display: flex;
+}
+
+.endpoint {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.num {
+    display: flex;
+    flex-direction: column;
+}
+
+.num span {
+    text-align: center;
+}
+
+.group span {
+    padding: 5px;
+}
+
+.num span.description {
+    font-weight: lighter;
+    font-size: 0.2em;
+}
+
+#toolbar button {
+    margin-right: 5px;
 }
