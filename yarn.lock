@@ -822,9 +822,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder#master:
+calder-gl@calder-gl/calder#pencil:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/eaf343649ba96da250b31cf8e359647d2b397b4f"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/b3e16e083a3893de17aa8b38a2fcae77730d32a2"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
@@ -1610,6 +1610,10 @@ findup-sync@~0.3.0:
   resolved "https://registry.yarnpkg.com/findup-sync/-/findup-sync-0.3.0.tgz#37930aa5d816b777c03445e1966cc6790a4c0b16"
   dependencies:
     glob "~5.0.0"
+
+fit-curve@calder-gl/fit-curve#master:
+  version "0.1.6"
+  resolved "https://codeload.github.com/calder-gl/fit-curve/tar.gz/8feaf3e5b5f91764517352324b7368e0fbda8920"
 
 flatmap-stream@^0.1.0:
   version "0.1.1"

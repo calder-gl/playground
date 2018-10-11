@@ -60,6 +60,7 @@ label {
 input {
     flex: 1 1;
     padding: 5px;
+    width: 0;
 }
 
 .group {

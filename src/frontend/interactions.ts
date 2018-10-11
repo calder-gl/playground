@@ -1,7 +1,7 @@
-import { Camera, GuidingCurveInfo, vec3ToVector } from 'calder-gl';
+import { Camera, vec3ToVector } from 'calder-gl';
 import { renderer } from './renderer';
 import { setState, state } from './state'
-import { addCostFn, addCostFunctionViz } from './costFn';
+import { addCostFn, addCostFunctionViz, addNewCurve } from './costFn';
 import { addModel } from './model';
 import { mat4, quat, vec3, vec4 } from 'gl-matrix';
 
@@ -46,6 +46,14 @@ function handleMouseDown(event: MouseEvent) {
     if (button === MouseButton.LEFT) {
         if (event.shiftKey) {
             controlState.mode = ControlMode.CAMERA_MOVE;
+        } else if (event.ctrlKey || event.metaKey) {
+            controlState.mode = ControlMode.DRAW_CURVE;
+
+            const bounds = renderer.stage.getBoundingClientRect();
+            const x = event.clientX - bounds.left;
+            const y = event.clientY - bounds.top;
+
+            setState({ pencilLine: [{x, y}] });
         } else {
             controlState.selectedHandle = null;
             let closestDistance = Infinity;
@@ -92,21 +100,28 @@ function handleMouseUp(event: MouseEvent) {
             y: event.clientY - boundingRect.top
         });
 
-        let selectedCurve: number | null = null;
-        guidingCurves.forEach((curve: GuidingCurveInfo, index: number) => {
-            curve.selected = index === selectedIndex;
-            if (curve.selected) {
-                selectedCurve = index;
-            }
-        });
-
-        setState({ selectedCurve });
+        setState({ selectedCurve: selectedIndex < guidingCurves.length ? selectedIndex : null });
     }
 
     if (controlState.mode === ControlMode.DRAG_CURVE) {
         addCostFn();
         addCostFunctionViz();
         addModel();
+    } else if (controlState.mode === ControlMode.DRAW_CURVE) {
+        const { pencilLine } = state;
+        if (pencilLine) {
+            addNewCurve(pencilLine);
+            addCostFn();
+            addCostFunctionViz();
+            addModel();
+            setState({ pencilLine: undefined });
+
+            const { guidingCurves } = state;
+            if (guidingCurves) {
+                const selectedCurve = guidingCurves.length - 1;
+                setState({ selectedCurve, guidingCurves });
+            }
+        }
     }
 
     event.stopPropagation();
@@ -128,7 +143,18 @@ function handleMouseMove(event: MouseEvent) {
 
     controlState.dragged = true;
 
-    if (controlState.mode === ControlMode.DRAG_CURVE) {
+    if (controlState.mode === ControlMode.DRAW_CURVE) {
+        const { pencilLine } = state;
+        if (pencilLine) {
+            const bounds = renderer.stage.getBoundingClientRect();
+            const x = event.clientX - bounds.left;
+            const y = event.clientY - bounds.top;
+
+            pencilLine.push({ x, y });
+            setState({ pencilLine });
+        }
+
+    } else if (controlState.mode === ControlMode.DRAG_CURVE) {
         // Create a direction vector representing the relative movement we want, normalized to the screen size
         const direction = vec3ToVector(
             vec3.set(tmpDirection, event.movementX / renderer.width, -event.movementY / renderer.height, 0));
