@@ -10,6 +10,7 @@ export type State = {
     guidingCurves?: calder.GuidingCurveInfo[];
     selectedCurve?: number | null;
     generatorTask?: calder.GeneratorTask;
+    pencilLine?: {x: number; y: number}[];
 };
 
 export const state: State = {};
