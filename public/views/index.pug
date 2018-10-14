@@ -10,21 +10,23 @@ html
 
   body
     .container
-      h1 Calder Playground
-      hr
+      .menu
+        h1 Calder Playground
+        select#edit
+
+        button#saveAs Save as
+        button#deleteFile Delete
 
       .row
         .column
-          h2 Calder Code
           #source
           div#toolbar.controls
-            button#run Run (Ctrl-R)
-            button#export Export .obj
+            button#run Save and Run (Ctrl-R)
+            button#export.button-outline Export .obj
           pre
             code#log
 
         .column.fixed
-          h2 Compiled WebGL
           div#webgl
 
           div#cost.disabled.controls

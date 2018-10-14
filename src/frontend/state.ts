@@ -1,5 +1,9 @@
 import * as calder from 'calder-gl';
 import { List } from 'immutable';
+import { defer } from 'lodash';
+
+// tslint:disable-next-line:import-name
+import Bezier = require('bezier-js');
 
 export type State = {
     generator?: calder.Generator;
@@ -12,6 +16,18 @@ export type State = {
     selectedCurve?: number | null;
     generating?: boolean;
     pencilLine?: {x: number; y: number}[];
+};
+
+type SerializableGuidingCurve = {
+    bezier: calder.coord[];
+    distanceMultiplier: calder.DistanceMultiplier;
+    alignmentMultiplier: number;
+    alignmentOffset: number;
+};
+
+export type SerializableState = {
+    source?: string;
+    costFnParams?: SerializableGuidingCurve[];
 };
 
 export const state: State = {};
@@ -50,6 +66,11 @@ export const merge = () => {
         undoStack[undoStack.length - 1] = { ...state };
     }
 }
+
+export const clearUndoRedo = () => {
+    undoStack.length = 0;
+    redoStack.length = 0;
+};
 
 const undo = () => {
     if (undoStack.length === 0) {
@@ -95,3 +116,53 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
         event.preventDefault();
     }
 });
+
+// Saving/loading logic
+
+const freshStateCallbacks: (() => void)[] = [];
+export const onFreshState = (callback: () => void) => freshStateCallbacks.push(callback);
+
+export const serialize = (): string => {
+    const object: SerializableState = {};
+
+    object.source = state.source;
+
+    object.costFnParams = state.costFnParams && state.costFnParams.toJS().map((curve) => {
+        return {
+            distanceMultiplier: curve.distanceMultiplier,
+            alignmentMultiplier: curve.alignmentMultiplier,
+            alignmentOffset: curve.alignmentOffset,
+            bezier: curve.bezier.points
+        };
+    });
+
+    return JSON.stringify(object);
+};
+
+export const loadSavedState = (serialized: string) => {
+    const object = <SerializableState>JSON.parse(serialized);
+
+    clearUndoRedo();
+
+    const freshState: Partial<State> = {}
+    for (let key in state) {
+        freshState[key] = undefined;
+    }
+
+    freshState.source = object.source;
+
+    freshState.costFnParams = object.costFnParams && List(object.costFnParams.map((curve: SerializableGuidingCurve) => {
+        return {
+            distanceMultiplier: curve.distanceMultiplier,
+            alignmentMultiplier: curve.alignmentMultiplier,
+            alignmentOffset: curve.alignmentOffset,
+            bezier: new Bezier(curve.bezier)
+        };
+    }));
+
+    setState(freshState);
+    freshStateCallbacks.forEach((callback) => callback());
+};
+
+// Once all other setup has run, populate the state
+defer(() => freshStateCallbacks.forEach((callback) => callback()));

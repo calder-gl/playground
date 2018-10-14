@@ -8,7 +8,7 @@ import { renderer } from './renderer';
 export const addGenerator = () => {
     const source = editor.getSession().getValue();
 
-    if (source === state.source) {
+    if (source === state.source && state.generator) {
         return;
     }
 
