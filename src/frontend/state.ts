@@ -1,13 +1,14 @@
 import * as calder from 'calder-gl';
+import { List } from 'immutable';
 
 export type State = {
     generator?: calder.Generator;
     source?: string;
     model?: calder.Model;
-    costFnParams?: calder.GuidingCurve[];
+    costFnParams?: List<calder.GuidingCurve>;
     costFn?: calder.CostFn;
     vectorField?: Float32Array;
-    guidingCurves?: calder.GuidingCurveInfo[];
+    guidingCurves?: List<calder.GuidingCurveInfo>;
     selectedCurve?: number | null;
     generatorTask?: calder.GeneratorTask;
     pencilLine?: {x: number; y: number}[];

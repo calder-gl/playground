@@ -2,6 +2,7 @@ import * as calder from 'calder-gl';
 import { range, throttle } from 'lodash';
 import { fitCurve } from 'fit-curve';
 import { mat4, vec4, vec3 } from 'gl-matrix';
+import { List } from 'immutable';
 
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
@@ -46,9 +47,9 @@ const initialCostFnParams = [
 export const addCostFn = () => {
     let { costFnParams } = state;
     if (!costFnParams) {
-        costFnParams = initialCostFnParams;
+        costFnParams = List(initialCostFnParams);
     }
-    const costFn = calder.CostFunction.guidingVectors(costFnParams);
+    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS());
 
     setState({ costFnParams, costFn });
 };
@@ -60,13 +61,13 @@ export const addCostFunctionViz = () => {
     }
 
     const vectorField = costFn.generateVectorField();
-    const guidingCurves = costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
+    const guidingCurves = List(costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
         return {
             path,
             selected: oldGuidingCurves && oldGuidingCurves[index] && oldGuidingCurves[index].selected,
-            bezier: costFnParams[index].bezier
+            bezier: costFnParams.get(index).bezier
         };
-    });
+    }));
 
     setState({ vectorField, guidingCurves });
 };
@@ -93,7 +94,7 @@ export const addNewCurve = (polyline: {x: number; y: number}[]) => {
         return point;
     });
 
-    const lastCurve = state.costFnParams && state.costFnParams[state.costFnParams.length - 1];
+    const lastCurve = state.costFnParams && state.costFnParams[state.costFnParams.size - 1];
 
     const curve = {
         bezier: new Bezier(bezier3D.map(([x, y, z]) => { return {x, y, z}; })),
@@ -102,8 +103,8 @@ export const addNewCurve = (polyline: {x: number; y: number}[]) => {
         alignmentOffset: lastCurve ? lastCurve.alignmentOffset : 0.7
     };
 
-    const { costFnParams = [] } = state;
-    costFnParams.push(curve);
+    let { costFnParams = List([]) } = state;
+    costFnParams = costFnParams.push(curve);
 
     setState({ costFnParams });
 }
@@ -127,12 +128,12 @@ onChange('selectedCurve', () => {
         distanceMultiplierControls.forEach((control) => control.disabled = false);
         alignmentMultiplierControl.disabled = false;
         alignmentOffsetControl.disabled = false;
-        deleteBtn.disabled = costFnParams.length <= 1;
+        deleteBtn.disabled = costFnParams.size <= 1;
 
         distanceMultiplierControls.forEach(
-            (control, i) => control.value = costFnParams[selectedCurve].distanceMultiplier[i]);
-        alignmentMultiplierControl.value = costFnParams[selectedCurve].alignmentMultiplier;
-        alignmentOffsetControl.value = costFnParams[selectedCurve].alignmentOffset;
+            (control, i) => control.value = costFnParams.get(selectedCurve).distanceMultiplier[i]);
+        alignmentMultiplierControl.value = costFnParams.get(selectedCurve).alignmentMultiplier;
+        alignmentOffsetControl.value = costFnParams.get(selectedCurve).alignmentOffset;
     } else {
         costControls.classList.add('disabled');
         distanceMultiplierControls.forEach((control) => control.disabled = true);
@@ -143,7 +144,7 @@ onChange('selectedCurve', () => {
 });
 
 const updateCostFnParams = throttle(() => {
-    const { costFnParams, selectedCurve } = state;
+    let { costFnParams, selectedCurve } = state;
     if (!costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }
@@ -158,27 +159,31 @@ const updateCostFnParams = throttle(() => {
         return;
     }
 
-    distanceMultiplierControls.forEach((control, i) => costFnParams[selectedCurve].distanceMultiplier[i] = parseFloat(control.value));
-    costFnParams[selectedCurve].alignmentMultiplier = parseFloat(alignmentMultiplierControl.value);
-    costFnParams[selectedCurve].alignmentOffset = parseFloat(alignmentOffsetControl.value);
+    const updatedParams = { ...costFnParams.get(selectedCurve) };
+    distanceMultiplierControls.forEach((control, i) => updatedParams.distanceMultiplier[i] = parseFloat(control.value));
+    updatedParams.alignmentMultiplier = parseFloat(alignmentMultiplierControl.value);
+    updatedParams.alignmentOffset = parseFloat(alignmentOffsetControl.value);
 
+    costFnParams = costFnParams.set(selectedCurve, updatedParams);
+
+    setState({ costFnParams });
     addCostFn();
     addModel();
 }, 100, { trailing: true });
 
 const deleteCurve = () => {
-    const { guidingCurves, costFnParams, selectedCurve } = state;
+    let { guidingCurves, costFnParams, selectedCurve } = state;
     if (!guidingCurves || !costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }
 
     // Must have at least one curve
-    if (costFnParams.length === 1) {
+    if (costFnParams.size === 1) {
         return;
     }
 
-    guidingCurves.splice(selectedCurve, 1);
-    costFnParams.splice(selectedCurve, 1);
+    guidingCurves = guidingCurves.delete(selectedCurve);
+    costFnParams = costFnParams.delete(selectedCurve);
 
     setState({ guidingCurves, costFnParams, selectedCurve: null });
     addCostFn();
