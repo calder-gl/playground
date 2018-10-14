@@ -27,8 +27,8 @@ const initialCostFnParams = [
             { x: 2, y: 2, z: 1 }
         ]),
         distanceMultiplier: [...scale],
-        alignmentMultiplier: 500,
-        alignmentOffset: 0.7
+        alignmentMultiplier: 400,
+        alignmentOffset: 0.6
     },
     {
         bezier: new Bezier([
@@ -38,7 +38,7 @@ const initialCostFnParams = [
             { x: 0, y: 3, z: 2 }
         ]),
         distanceMultiplier: [...scale],
-        alignmentMultiplier: 500,
+        alignmentMultiplier: 400,
         alignmentOffset: 0.6
     }
 ]
@@ -186,11 +186,9 @@ const deleteCurve = () => {
     addModel();
 }
 
-['keyup', 'change'].forEach((eventName) => {
-    costControls.addEventListener(eventName, updateCostFnParams);
-    distanceMultiplierControls.forEach((control) => control.addEventListener(eventName, updateCostFnParams));
-    alignmentOffsetControl.addEventListener(eventName, updateCostFnParams);
-    alignmentMultiplierControl.addEventListener(eventName, updateCostFnParams);
-});
+costControls.addEventListener('input', updateCostFnParams);
+distanceMultiplierControls.forEach((control) => control.addEventListener('input', updateCostFnParams));
+alignmentOffsetControl.addEventListener('input', updateCostFnParams);
+alignmentMultiplierControl.addEventListener('input', updateCostFnParams);
 
 deleteBtn.addEventListener('click', deleteCurve);

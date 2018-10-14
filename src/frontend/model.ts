@@ -9,14 +9,14 @@ export const addModel = () => {
     }
 
     if (state.generator && state.costFn) {
-        state.generatorTask = state.generator.generateSOSMC(
+        const generatorTask = state.generator.generateSOSMC(
             {
                 start: 'START',
                 sosmcDepth: 100,
-                samples: (generation: number) => 80 - generation / 100 * 70,
+                samples: (generation: number) => 100 - generation / 100 * 85,
                 heuristicScale: (generation: number) => {
-                    if (generation <= 50) {
-                        return 0.01 - generation / 50 * 0.01;
+                    if (generation <= 40) {
+                        return 0.013 - generation / 40 * 0.013;
                     } else {
                         return 0;
                     }
@@ -27,5 +27,7 @@ export const addModel = () => {
         )
         .then((model: calder.Model) =>
             setState({ model, generatorTask: undefined }));
+
+        setState({ generatorTask });
     }
 };
