@@ -16,6 +16,7 @@ export type State = {
 
 export const state: State = {};
 
+const MAX_UNDO_SIZE = 15;
 const undoStack: State[] = [];
 const redoStack: State[] = [];
 
@@ -33,6 +34,12 @@ export const setState = (newState: Partial<State>) => {
 
 export const commit = () => {
     undoStack.push({ ...state });
+
+    // Remove oldest item if there are too many
+    if (undoStack.length > MAX_UNDO_SIZE) {
+        undoStack.shift();
+    }
+
     redoStack.length = 0;
 }
 
