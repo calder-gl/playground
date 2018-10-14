@@ -1,13 +1,14 @@
 import * as calder from 'calder-gl';
 import * as lodash from 'lodash';
 
-import { state } from './state';
+import { onFreshState, state } from './state';
 
 import { addCostFn, addCostFunctionViz } from './costFn';
 import { addGenerator } from './generator';
 import { addModel } from './model';
 import { ambientLightColor, renderer } from './renderer';
 import { setupOnscreenInteractions } from './interactions';
+import { initializeLocalStorage } from './localstorage';
 
 
 // Add globals for use in user code
@@ -40,10 +41,13 @@ window.onbeforeunload = () => {
 
 
 // Set initial state
-addCostFn();
-addCostFunctionViz();
-addGenerator();
-addModel();
+onFreshState(() => {
+    initializeLocalStorage();
+    addCostFn();
+    addCostFunctionViz();
+    addGenerator();
+    addModel();
+});
 
 
 // Add UI hooks

@@ -3,6 +3,7 @@ import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 
 import { Completion } from './Completion';
+import { onChange, state } from './state';
 
 const codeElement = <HTMLScriptElement> document.getElementById('code');
 export const editor = ace.edit('source');
@@ -13,3 +14,5 @@ editor.setOptions({
     enableBasicAutocompletion: true,
     enableLiveAutocompletion: true
 });
+
+onChange('source', () => editor.getSession().setValue(state.source || codeElement.innerText));

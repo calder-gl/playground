@@ -809,7 +809,7 @@ cache-base@^1.0.1:
 
 calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/5f54634ce4d3c4c3934758ccc0d8400f6b2d8566"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/8bc0247b67b7fe1a37ed2259d5d49a0e9694ea3a"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
@@ -2020,6 +2020,10 @@ ignore-walk@^3.0.1:
   resolved "https://registry.yarnpkg.com/ignore-walk/-/ignore-walk-3.0.1.tgz#a83e62e7d272ac0e3b551aaa82831a19b69f82f8"
   dependencies:
     minimatch "^3.0.4"
+
+immutable@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
 import-lazy@^2.1.0:
   version "2.1.0"

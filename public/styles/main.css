@@ -2,6 +2,26 @@
     padding: 20px;
 }
 
+.menu {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.menu h1 {
+    flex: 1;
+}
+
+.menu button, .menu select {
+    margin-left: 1rem;
+}
+
+.menu select {
+    flex: 0;
+    width: 300px;
+    margin-bottom: 1rem;
+}
+
 textarea {
     font-family: monospace;
     min-height: 400px;
