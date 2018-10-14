@@ -1,6 +1,6 @@
 import { Camera, vec3ToVector } from 'calder-gl';
 import { renderer } from './renderer';
-import { setState, state } from './state'
+import { commit, setState, state } from './state'
 import { addCostFn, addCostFunctionViz, addNewCurve } from './costFn';
 import { addModel } from './model';
 import { mat4, quat, vec3, vec4 } from 'gl-matrix';
@@ -101,12 +101,14 @@ function handleMouseUp(event: MouseEvent) {
         });
 
         setState({ selectedCurve: selectedIndex < guidingCurves.size ? selectedIndex : null });
+        commit();
     }
 
     if (controlState.mode === ControlMode.DRAG_CURVE) {
         addCostFn();
         addCostFunctionViz();
         addModel();
+        commit();
     } else if (controlState.mode === ControlMode.DRAW_CURVE) {
         const { pencilLine } = state;
         if (pencilLine) {
@@ -120,6 +122,7 @@ function handleMouseUp(event: MouseEvent) {
             if (guidingCurves) {
                 const selectedCurve = guidingCurves.size - 1;
                 setState({ selectedCurve, guidingCurves });
+                commit();
             }
         }
     }

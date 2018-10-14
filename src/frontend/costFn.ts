@@ -7,7 +7,7 @@ import { List } from 'immutable';
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
 
-import { onChange, setState, state } from './state';
+import { commit, onChange, setState, state } from './state';
 import { addModel } from './model';
 import { renderer } from './renderer';
 
@@ -55,7 +55,7 @@ export const addCostFn = () => {
 };
 
 export const addCostFunctionViz = () => {
-    const { costFn, costFnParams, guidingCurves: oldGuidingCurves } = state;
+    const { costFn, costFnParams, selectedCurve } = state;
     if (!costFn || !costFnParams) {
         return;
     }
@@ -64,7 +64,7 @@ export const addCostFunctionViz = () => {
     const guidingCurves = List(costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
         return {
             path,
-            selected: oldGuidingCurves && oldGuidingCurves[index] && oldGuidingCurves[index].selected,
+            selected: index === selectedCurve,
             bezier: costFnParams.get(index).bezier
         };
     }));
@@ -169,6 +169,7 @@ const updateCostFnParams = throttle(() => {
     setState({ costFnParams });
     addCostFn();
     addModel();
+    commit();
 }, 100, { trailing: true });
 
 const deleteCurve = () => {
@@ -189,6 +190,7 @@ const deleteCurve = () => {
     addCostFn();
     addCostFunctionViz();
     addModel();
+    commit();
 }
 
 costControls.addEventListener('input', updateCostFnParams);

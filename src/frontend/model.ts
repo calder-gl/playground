@@ -1,15 +1,19 @@
 import * as calder from 'calder-gl';
 
-import { setState, state } from './state';
+import { merge, onUndoRedo, setState, state } from './state';
+
+let generatorTask: calder.GeneratorTask | null = null;
 
 export const addModel = () => {
-    if (state.generatorTask) {
+    if (generatorTask) {
         // If we were in the middle of generating something else, cancel that task
-        state.generatorTask.cancel();
+        generatorTask.cancel();
     }
 
     if (state.generator && state.costFn) {
-        const generatorTask = state.generator.generateSOSMC(
+        setState({ generating: true });
+
+        generatorTask = state.generator.generateSOSMC(
             {
                 start: 'START',
                 sosmcDepth: 100,
@@ -25,9 +29,24 @@ export const addModel = () => {
             },
             1 / 30
         )
-        .then((model: calder.Model) =>
-            setState({ model, generatorTask: undefined }));
-
-        setState({ generatorTask });
+        .then((model: calder.Model) => {
+            generatorTask = null;
+            setState({ model, generating: false })
+            merge();
+        });
     }
 };
+
+onUndoRedo(() => {
+    // We want to stop whatever we were generating before
+    if (generatorTask) {
+        generatorTask.cancel();
+        generatorTask = null;
+    }
+
+    // If the undo/redo state we jumped to was waiting on a generation
+    // task when it was committed, restart the task
+    if (state.generating) {
+        addModel();
+    }
+});
