@@ -49,7 +49,7 @@ export const addCostFn = () => {
     if (!costFnParams) {
         costFnParams = List(initialCostFnParams);
     }
-    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS());
+    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS(), );
 
     setState({ costFnParams, costFn });
 };
@@ -60,7 +60,7 @@ export const addCostFunctionViz = () => {
         return;
     }
 
-    const vectorField = costFn.generateVectorField();
+    const vectorField = costFn.generateVectorField(3, 0.5, {x: 0, y: 2, z: 0});
     const guidingCurves = List(costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
         return {
             path,
