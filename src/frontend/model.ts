@@ -1,6 +1,6 @@
 import * as calder from 'calder-gl';
 
-import { merge, onUndoRedo, setState, state } from './state';
+import { merge, onUndoRedo, state } from './state';
 
 let generatorTask: calder.GeneratorTask | null = null;
 
@@ -11,7 +11,7 @@ export const addModel = () => {
     }
 
     if (state.generator && state.costFn) {
-        setState({ generating: true });
+        state.setState({ generating: true });
 
         generatorTask = state.generator.generateSOSMC(
             {
@@ -28,10 +28,9 @@ export const addModel = () => {
                 costFn: state.costFn
             },
             1 / 30
-        )
-        .then((model: calder.Model) => {
+        ).then((model: calder.Model) => {
             generatorTask = null;
-            setState({ model, generating: false })
+            state.setState({ model, generating: false })
             merge();
         });
     }

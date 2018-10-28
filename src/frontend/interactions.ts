@@ -1,6 +1,6 @@
 import { Camera, vec3ToVector } from 'calder-gl';
 import { renderer } from './renderer';
-import { commit, setState, state } from './state'
+import { commit, state } from './state'
 import { addCostFn, addCostFunctionViz, addNewCurve } from './costFn';
 import { addModel } from './model';
 import { mat4, quat, vec3, vec4 } from 'gl-matrix';
@@ -41,7 +41,7 @@ function handleMouseDown(event: MouseEvent) {
 
     controlState.dragged = false;
 
-    const button = <MouseButton> event.button;
+    const button = <MouseButton>event.button;
 
     if (button === MouseButton.LEFT) {
         if (event.shiftKey) {
@@ -53,7 +53,7 @@ function handleMouseDown(event: MouseEvent) {
             const x = event.clientX - bounds.left;
             const y = event.clientY - bounds.top;
 
-            setState({ pencilLine: [{x, y}] });
+            state.setState({ pencilLine: [{ x, y }] });
         } else {
             controlState.selectedHandle = null;
             let closestDistance = Infinity;
@@ -100,7 +100,7 @@ function handleMouseUp(event: MouseEvent) {
             y: event.clientY - boundingRect.top
         });
 
-        setState({ selectedCurve: selectedIndex < guidingCurves.size ? selectedIndex : null });
+        state.setState({ selectedCurve: selectedIndex < guidingCurves.size ? selectedIndex : null });
         commit();
     }
 
@@ -116,12 +116,12 @@ function handleMouseUp(event: MouseEvent) {
             addCostFn();
             addCostFunctionViz();
             addModel();
-            setState({ pencilLine: undefined });
+            state.setState({ pencilLine: undefined });
 
             const { guidingCurves } = state;
             if (guidingCurves) {
                 const selectedCurve = guidingCurves.size - 1;
-                setState({ selectedCurve, guidingCurves });
+                state.setState({ selectedCurve, guidingCurves });
                 commit();
             }
         }
@@ -154,7 +154,7 @@ function handleMouseMove(event: MouseEvent) {
             const y = event.clientY - bounds.top;
 
             pencilLine.push({ x, y });
-            setState({ pencilLine });
+            state.setState({ pencilLine });
         }
 
     } else if (controlState.mode === ControlMode.DRAG_CURVE) {
@@ -165,7 +165,7 @@ function handleMouseMove(event: MouseEvent) {
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
         if (inverseTransform && state.guidingCurves && state.costFnParams &&
-                state.selectedCurve !== undefined && state.selectedCurve !== null && controlState.selectedHandle !== null) {
+            state.selectedCurve !== undefined && state.selectedCurve !== null && controlState.selectedHandle !== null) {
             const points = state.costFnParams.get(state.selectedCurve).bezier.points;
 
             // We need to scale the direction vector so that when the control point moves, it moves the right
@@ -213,7 +213,7 @@ function handleMouseMove(event: MouseEvent) {
             };
             const guidingCurves = state.guidingCurves.set(state.selectedCurve, newGuidingCurve);
 
-            setState({ costFnParams, guidingCurves });
+            state.setState({ costFnParams, guidingCurves });
         }
 
     } else if (controlState.mode === ControlMode.CAMERA_MOVE) {
@@ -259,11 +259,11 @@ function handleMouseMove(event: MouseEvent) {
                 Camera.up,
                 direction);
             vec3.normalize(axis, axis);
-                renderer.camera.rotateAboutTarget(quat.setAxisAngle(
-                    tmpQuat,
-                    axis,
-                    event.movementY / 100
-                ));
+            renderer.camera.rotateAboutTarget(quat.setAxisAngle(
+                tmpQuat,
+                axis,
+                event.movementY / 100
+            ));
         }
     }
 }

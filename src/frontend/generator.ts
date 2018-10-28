@@ -1,7 +1,7 @@
 import * as calder from 'calder-gl';
 import { transform } from '@babel/standalone';
 
-import { setState, state } from './state';
+import { state } from './state';
 import { editor } from './editor';
 import { renderer } from './renderer';
 
@@ -22,10 +22,10 @@ export const addGenerator = () => {
         const generator = calder.Armature.generator();
         setup(generator);
 
-        setState({ source, generator });
+        state.setState({ source, generator });
     } catch (e) {
         console.log(e);
 
-        setState({ source, generator: undefined });
+        state.setState({ source, generator: undefined });
     }
 };

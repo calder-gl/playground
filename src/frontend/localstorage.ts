@@ -1,4 +1,4 @@
-import { loadSavedState, serialize, onChange } from './state';
+import { state, onChange } from './state';
 import { range, throttle } from 'lodash';
 
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
@@ -16,7 +16,7 @@ menu.addEventListener('change', () => {
     }
 
     const savedState = localStorage.getItem(currentDocument) || '{}';
-    loadSavedState(savedState);
+    state.deserialize(savedState);
 });
 
 const updateEditMenu = () => {
@@ -50,7 +50,7 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const saveState = () => localStorage.setItem(currentDocument, serialize());
+const saveState = () => localStorage.setItem(currentDocument, state.serialize());
 
 
 saveAsBtn.addEventListener('click', () => {
@@ -67,7 +67,7 @@ deleteBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to delete this document?')) {
         localStorage.removeItem(currentDocument);
         currentDocument = DEFAULT;
-        loadSavedState('{}');
+        state.deserialize('{}');
     }
 });
 
