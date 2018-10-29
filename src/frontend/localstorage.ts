@@ -15,8 +15,7 @@ menu.addEventListener('change', () => {
         currentDocument = prompt('Filename:') || DEFAULT;
     }
 
-    const savedState = localStorage.getItem(currentDocument) || '{}';
-    state.deserialize(savedState);
+    state.retrieve(currentDocument);
 });
 
 const updateEditMenu = () => {
@@ -50,8 +49,14 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const saveState = () => localStorage.setItem(currentDocument, state.serialize());
+const saveState = () => state.persist(currentDocument);
 
+export const initializeLocalStorage = () => {
+    if (!localStorage.getItem(DEFAULT)) {
+        localStorage.setItem(DEFAULT, '{}');
+    }
+    updateEditMenu();
+};
 
 saveAsBtn.addEventListener('click', () => {
     const name = prompt('New filename:');
@@ -71,18 +76,12 @@ deleteBtn.addEventListener('click', () => {
     }
 });
 
-export const initializeLocalStorage = () => {
-    if (!localStorage.getItem(DEFAULT)) {
-        localStorage.setItem(DEFAULT, '{}');
-    }
-    updateEditMenu();
-};
-
 onChange('source', throttle(
     saveState,
     100,
     { trailing: true }
 ));
+
 onChange('costFnParams', throttle(
     saveState,
     100,

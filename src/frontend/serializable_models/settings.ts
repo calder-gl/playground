@@ -1,4 +1,5 @@
 import { Serializable } from './serializable';
+import { Persistable } from './persistable';
 
 // Keybinding refers to the keybindings for the editor.
 enum Keybinding {
@@ -32,7 +33,7 @@ export type BakedSettings = {
  *
  * @class Settings
  */
-export class Settings implements Serializable<BakedSettings> {
+export class Settings extends Persistable<BakedSettings> implements Serializable<BakedSettings> {
     keybinding?: Keybinding;
     theme?: Theme;
 
@@ -43,6 +44,7 @@ export class Settings implements Serializable<BakedSettings> {
      * @constructor
      */
     constructor() {
+        super();
         this.clearState();
     }
 
@@ -52,6 +54,7 @@ export class Settings implements Serializable<BakedSettings> {
      *
      * @class Settings
      * @method serialize
+     * @interface Serializable
      * @return {string}
      */
     serialize(): string {
@@ -69,6 +72,7 @@ export class Settings implements Serializable<BakedSettings> {
      *
      * @class Settings
      * @method deserialize
+     * @interface Serializable
      * @param {string} serialized The serialized JSON object.
      */
     deserialize(serialized: string) {
@@ -82,6 +86,7 @@ export class Settings implements Serializable<BakedSettings> {
      *
      * @class Settings
      * @method asBakedType
+     * @interface Serializable
      * @return {BakedSettings}
      */
     asBakedType(): BakedSettings {
@@ -94,6 +99,7 @@ export class Settings implements Serializable<BakedSettings> {
      *
      * @class Settings
      * @method setState
+     * @interface Serializable
      * @param {Partial<BakedSettings>} newState The new state for the object.
      */
     setState(newState: Partial<BakedSettings>) {
@@ -109,6 +115,7 @@ export class Settings implements Serializable<BakedSettings> {
      *
      * @class Settings
      * @method clearState
+     * @interface Serializable
      */
     clearState() {
         this.keybinding = undefined;

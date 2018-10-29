@@ -5,6 +5,7 @@ import { clearUndoRedo, freshStateCallbacks, listeners } from '../state';
 
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
+import { Persistable } from './persistable';
 
 // SerializableGuidingCurve is the type representation of a guiding curve to be
 // JSON serialized.
@@ -41,7 +42,7 @@ export type BakedState = {
  *
  * @class State
  */
-export class State implements Serializable<BakedState> {
+export class State extends Persistable<BakedState> implements Serializable<BakedState> {
     generator?: calder.Generator;
     source?: string;
     model?: calder.Model;
@@ -60,6 +61,7 @@ export class State implements Serializable<BakedState> {
      * @constructor
      */
     constructor() {
+        super();
         this.clearState()
     }
 
@@ -160,6 +162,7 @@ export class State implements Serializable<BakedState> {
      *
      * @class State
      * @method clearState
+     * @interface Serializable
      */
     clearState() {
         this.generator = undefined;
