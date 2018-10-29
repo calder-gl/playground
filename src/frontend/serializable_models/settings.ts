@@ -1,48 +1,117 @@
 import { Serializable } from './serializable';
 
+// Keybinding refers to the keybindings for the editor.
 enum Keybinding {
     Normal = 'normal',
     Vim = 'vim',
     Emacs = 'emacs',
 }
 
+// Theme is the value for the editor's theme.
+enum Theme {
+    Default = 'default',
+    SolarizedDark = 'solarized_dark',
+}
+
+// SerializableSettings is the type representation of Settings to be JSON
+// serialized.
 type SerializableSettings = {
-    keybinding: string
+    keybinding: string;
+    theme: string;
 };
 
+// BakedSettings is the type representation of Settings used internally.
 export type BakedSettings = {
     keybinding?: Keybinding;
+    theme?: Theme;
 };
 
+/**
+ * Settings refers to the user-defined configuration settings for the Calder
+ * editor.
+ *
+ * @class Settings
+ */
 export class Settings implements Serializable<BakedSettings> {
-    public keybinding?: Keybinding;
+    keybinding?: Keybinding;
+    theme?: Theme;
 
+    /**
+     * constructor creates a new Serializable Settings object.
+     *
+     * @class Settings
+     * @constructor
+     */
     constructor() {
         this.clearState();
     }
 
+    /**
+     * serialize serializes the current serializedObject into a JSON compliant
+     * string to be stored in localstorage.
+     *
+     * @class Settings
+     * @method serialize
+     * @return {string}
+     */
     serialize(): string {
         const serializedObject: SerializableSettings = {
-            keybinding: this.keybinding || "normal"
+            keybinding: this.keybinding || 'normal',
+            theme: this.theme || 'default'
         };
         return JSON.stringify(serializedObject);
     }
 
+    /**
+     * deserialize takes a serialized representation of the object Settings as a
+     * JSON string and updates the properties of the object with the values
+     * represented in the string.
+     *
+     * @class Settings
+     * @method deserialize
+     * @param {string} serialized The serialized JSON object.
+     */
     deserialize(serialized: string) {
         const serializedObject = <SerializableSettings>JSON.parse(serialized);
         this.keybinding = <Keybinding>serializedObject.keybinding;
     }
 
+    /**
+     * asBakedType returns a representation of the Settings object as a
+     * BakedSettings type.
+     *
+     * @class Settings
+     * @method asBakedType
+     * @return {BakedSettings}
+     */
     asBakedType(): BakedSettings {
-        return {
-            keybinding: this.keybinding
+        return this;
+    }
+
+    /**
+     * setState updates the values for the Settings object with a partial
+     * implementation of Settings.
+     *
+     * @class Settings
+     * @method setState
+     * @param {Partial<BakedSettings>} newState The new state for the object.
+     */
+    setState(newState: Partial<BakedSettings>) {
+        if (newState == undefined) return;
+
+        for (const key in newState) {
+            this[key] = newState[key];
         }
     }
 
-    setState(_newState: Partial<BakedSettings>) {
-    }
-
+    /**
+     * clearState clears all of the property values for the Settings object.
+     *
+     * @class Settings
+     * @method clearState
+     */
     clearState() {
         this.keybinding = undefined;
+        this.theme = undefined;
     }
 }

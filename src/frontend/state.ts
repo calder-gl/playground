@@ -9,7 +9,6 @@ export const state = new State();
 export const listeners: { [key in keyof BakedState]: (() => void)[] } = {};
 const undoRedoListeners: (() => void)[] = [];
 
-
 export const commit = () => {
     undoStack.push({ ...state.asBakedType() });
 
@@ -80,7 +79,6 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 });
 
 // Saving/loading logic
-
 export const freshStateCallbacks: (() => void)[] = [];
 export const onFreshState = (callback: () => void) => freshStateCallbacks.push(callback);
 

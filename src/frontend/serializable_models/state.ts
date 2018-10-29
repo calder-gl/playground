@@ -6,6 +6,8 @@ import { clearUndoRedo, freshStateCallbacks, listeners } from '../state';
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
 
+// SerializableGuidingCurve is the type representation of a guiding curve to be
+// JSON serialized.
 type SerializableGuidingCurve = {
     bezier: calder.coord[];
     distanceMultiplier: calder.DistanceMultiplier;
@@ -13,11 +15,13 @@ type SerializableGuidingCurve = {
     alignmentOffset: number;
 };
 
+// SerializableState is the type representation of State to be JSON serialized.
 type SerializableState = {
     source?: string;
     costFnParams?: SerializableGuidingCurve[];
 };
 
+// BakedState is the type representation of Settings used internally.
 export type BakedState = {
     generator?: calder.Generator;
     source?: string;
@@ -31,20 +35,29 @@ export type BakedState = {
     pencilLine?: { x: number; y: number }[];
 };
 
+/**
+ * State refers to the state of the WebGL Calder program compiled and executed
+ * in the editor.
+ *
+ * @class State
+ */
 export class State implements Serializable<BakedState> {
-    public generator?: calder.Generator;
-    public source?: string;
-    public model?: calder.Model;
-    public costFnParams?: List<calder.GuidingCurve>;
-    public costFn?: calder.CostFn;
-    public vectorField?: Float32Array;
-    public guidingCurves?: List<calder.GuidingCurveInfo>;
-    public selectedCurve?: number | null;
-    public generating?: boolean;
-    public pencilLine?: { x: number; y: number }[];
+    generator?: calder.Generator;
+    source?: string;
+    model?: calder.Model;
+    costFnParams?: List<calder.GuidingCurve>;
+    costFn?: calder.CostFn;
+    vectorField?: Float32Array;
+    guidingCurves?: List<calder.GuidingCurveInfo>;
+    selectedCurve?: number | null;
+    generating?: boolean;
+    pencilLine?: { x: number; y: number }[];
 
     /**
-     * constructor creates a new blank Serializable State object.
+     * constructor creates a new Serializable State object.
+     *
+     * @class State
+     * @constructor
      */
     constructor() {
         this.clearState()
@@ -53,6 +66,10 @@ export class State implements Serializable<BakedState> {
     /**
      * serialize serializes the current serializedObject into a JSON compliant
      * string to be stored in localstorage.
+     *
+     * @class State
+     * @method serialize
+     * @return {string}
      */
     serialize(): string {
         const serializedObject: SerializableState = {};
@@ -75,6 +92,10 @@ export class State implements Serializable<BakedState> {
      * deserialize takes a serialized representation of the object State as a
      * JSON string and updates the properties of the object with the values
      * represented in the string.
+     *
+     * @class State
+     * @method deserialize
+     * @param {string} serialized The serialized JSON object.
      */
     deserialize(serialized: string) {
         // Deserialize the stored JSON object.
@@ -97,32 +118,30 @@ export class State implements Serializable<BakedState> {
                 };
             }));
 
-        // TODO: document what this does.
+        // Update other state with fresh state callbacks (since we only
+        // serialize the `source` and `costFnParams`.
         freshStateCallbacks.forEach((callback) => callback());
     }
 
     /**
      * asBakedType returns a representation of the State object as a TypeScript
      * type.
+     *
+     * @class State
+     * @method asBakedType
+     * @return {BakedState}
      */
     asBakedType(): BakedState {
-        return {
-            generator: this.generator,
-            source: this.source,
-            model: this.model,
-            costFnParams: this.costFnParams,
-            costFn: this.costFn,
-            vectorField: this.vectorField,
-            guidingCurves: this.guidingCurves,
-            selectedCurve: this.selectedCurve,
-            generating: this.generating,
-            pencilLine: this.pencilLine
-        }
+        return this;
     }
 
     /**
      * setState updates the state for the State object with a partial
      * implementation of State.
+     *
+     * @class State
+     * @method setState
+     * @param {Partial<BakedState>} newState The new state for the object.
      */
     setState(newState: Partial<BakedState>) {
         if (newState == undefined) return;
@@ -137,7 +156,10 @@ export class State implements Serializable<BakedState> {
     }
 
     /**
-     * clearState clears all of the current state values for the State object.
+     * clearState clears all of the property values for the State object.
+     *
+     * @class State
+     * @method clearState
      */
     clearState() {
         this.generator = undefined;
