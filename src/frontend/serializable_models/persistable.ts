@@ -11,6 +11,7 @@ export abstract class Persistable<T> implements Serializable<T> {
      *
      * @class Persistable
      * @method persist
+     * @param {string} document The document to persist the JSON string to.
      */
     persist(document: string) {
         localStorage.setItem(document, this.serialize());
@@ -21,7 +22,7 @@ export abstract class Persistable<T> implements Serializable<T> {
      *
      * @class Persistable
      * @method retrieve
-     * @param {string} document The document to retrieve the storage from.
+     * @param {string} document The document to retrieve the JSON string from.
      */
     retrieve(document: string) {
         const savedState = localStorage.getItem(document) || '{}';
