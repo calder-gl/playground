@@ -1,4 +1,5 @@
 import { loadSavedState, serialize, onChange } from './state';
+import { defaultSource } from './editor';
 import { range, throttle } from 'lodash';
 
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
@@ -6,7 +7,7 @@ const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
 const menu = <HTMLSelectElement>document.getElementById('edit');
 const DEFAULT = 'sample';
 const NEW = '___new';
-let currentDocument = DEFAULT;
+let currentDocument: string;
 
 menu.addEventListener('change', () => {
     currentDocument = menu.value;
@@ -73,7 +74,12 @@ deleteBtn.addEventListener('click', () => {
 
 export const initializeLocalStorage = () => {
     if (!localStorage.getItem(DEFAULT)) {
-        localStorage.setItem(DEFAULT, '{}');
+        localStorage.setItem(DEFAULT, JSON.stringify({source: defaultSource}));
+    }
+
+    if (!currentDocument) {
+        currentDocument = DEFAULT;
+        loadSavedState(<string>localStorage.getItem(DEFAULT));
     }
     updateEditMenu();
 };
