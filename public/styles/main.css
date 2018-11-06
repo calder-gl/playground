@@ -49,8 +49,13 @@ pre > code {
     min-height: 400px;
 }
 
+.column {
+    min-width: 0;
+}
+
 .column.fixed {
     width: auto;
+    min-width: auto;
     flex: 0;
 }
 
