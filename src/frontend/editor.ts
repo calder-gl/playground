@@ -6,8 +6,9 @@ import { Completion } from './Completion';
 import { onChange, state } from './state';
 
 const codeElement = <HTMLScriptElement> document.getElementById('code');
+export const defaultSource = codeElement.innerText;
+
 export const editor = ace.edit('source');
-editor.getSession().setValue(codeElement.innerText);
 editor.getSession().setMode('ace/mode/javascript');
 ace.acequire('ace/ext/language_tools').addCompleter(new Completion());
 editor.setOptions({
@@ -16,7 +17,8 @@ editor.setOptions({
 });
 
 onChange('source', () => {
-    if (editor.getSession().getValue() !== state.source) {
-        editor.getSession().setValue(state.source || codeElement.innerText);
+    if (editor.getSession().getValue() === state.source) {
+      return;
     }
+    editor.getSession().setValue(state.source || '');
 });
