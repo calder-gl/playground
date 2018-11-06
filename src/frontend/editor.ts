@@ -15,4 +15,8 @@ editor.setOptions({
     enableLiveAutocompletion: true
 });
 
-onChange('source', () => editor.getSession().setValue(state.source || codeElement.innerText));
+onChange('source', () => {
+    if (editor.getSession().getValue() !== state.source) {
+        editor.getSession().setValue(state.source || codeElement.innerText);
+    }
+});
