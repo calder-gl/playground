@@ -6,15 +6,28 @@ import { Serializable } from './serializable';
  * @class Persistable
  */
 export abstract class Persistable<T> implements Serializable<T> {
+    documentTitle: string;
+
+    /**
+     * constructor creates a new Persistable concretion object.
+     *
+     * @class State
+     * @constructor
+     * @param {string} title The key associated with the localstorage object
+     *   persisted.
+     */
+    constructor(title?: string) {
+        this.documentTitle = title || '';
+    }
+
     /**
      * persist persists the serialized object representation to local storage.
      *
      * @class Persistable
      * @method persist
-     * @param {string} document The document to persist the JSON string to.
      */
-    persist(document: string) {
-        localStorage.setItem(document, this.serialize());
+    persist() {
+        localStorage.setItem(this.getDocumentTitle(), this.serialize());
     }
 
     /**
@@ -22,10 +35,9 @@ export abstract class Persistable<T> implements Serializable<T> {
      *
      * @class Persistable
      * @method retrieve
-     * @param {string} document The document to retrieve the JSON string from.
      */
-    retrieve(document: string) {
-        const savedState = localStorage.getItem(document) || '{}';
+    retrieve() {
+        const savedState = localStorage.getItem(this.getDocumentTitle()) || '{}';
         this.deserialize(savedState);
     }
 
@@ -45,4 +57,10 @@ export abstract class Persistable<T> implements Serializable<T> {
 
     // Cleans the object's state by clearing all the properties of the object.
     abstract clearState();
+
+    // Updates the document title associated with the persisted model.
+    public setDocumentTitle(title: string) { this.documentTitle = title; }
+
+    // The document title associated with the persisted model.
+    private getDocumentTitle() { return this.documentTitle; }
 }

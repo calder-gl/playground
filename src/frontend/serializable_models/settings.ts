@@ -4,14 +4,36 @@ import { Persistable } from './persistable';
 // Keybinding refers to the keybindings for the editor.
 enum Keybinding {
     Normal = 'normal',
-    Vim = 'vim',
     Emacs = 'emacs',
+    Vim = 'vim',
+}
+
+// stringToKeybinding converts a string representation to a Keybinding enum value.
+export function stringToKeybinding(s: string): Keybinding {
+    switch (s) {
+        case 'emacs':
+            return Keybinding.Emacs;
+        case 'vim':
+            return Keybinding.Vim;
+        default:
+            return Keybinding.Normal;
+    }
 }
 
 // Theme is the value for the editor's theme.
 enum Theme {
     Default = 'default',
     SolarizedDark = 'solarized_dark',
+}
+
+// stringToTheme converts a string representation to a Theme enum value.
+export function stringToTheme(s: string): Theme {
+    switch (s) {
+        case 'solarized_dark':
+            return Theme.SolarizedDark;
+        default:
+            return Theme.Default;
+    }
 }
 
 // SerializableSettings is the type representation of Settings to be JSON
@@ -44,7 +66,7 @@ export class Settings extends Persistable<BakedSettings> implements Serializable
      * @constructor
      */
     constructor() {
-        super();
+        super('settings');
         this.clearState();
     }
 

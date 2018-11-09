@@ -5,7 +5,7 @@ import 'brace/ext/language_tools';
 import { Completion } from './Completion';
 import { onChange, state } from './state';
 
-const codeElement = <HTMLScriptElement> document.getElementById('code');
+const codeElement = <HTMLScriptElement>document.getElementById('code');
 export const editor = ace.edit('source');
 editor.getSession().setValue(codeElement.innerText);
 editor.getSession().setMode('ace/mode/javascript');

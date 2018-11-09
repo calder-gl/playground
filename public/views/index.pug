@@ -59,5 +59,26 @@ html
             div.input
               button#delete(disabled) Delete this guide
 
+      .row
+        .column
+          h1 Settings
+          hr
+          h3 Theme
+          fieldset(id="theme")
+
+          h3 Keybindings
+          fieldset#editor.column
+            .group
+              input(type="radio", id="normal", name="editor", value="normal")
+              label(for="normal") Normal
+            .group
+              input(type="radio", id="emacs", name="editor", value="emacs")
+              label(for="emacs") Emacs
+            .group
+              input(type="radio", id="vim", name="editor", value="vim")
+              label(for="vim") Vim
+
+          button#saveSettings Save Settings
+
     script#code(type='x-code')!= source
     script(src='js/client.js')

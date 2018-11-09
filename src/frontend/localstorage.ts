@@ -1,6 +1,9 @@
-import { state, onChange } from './state';
+import { settings, state, onChange } from './state';
 import { range, throttle } from 'lodash';
+import { stringToKeybinding, stringToTheme } from './serializable_models/settings';
+import { editor } from './editor';
 
+const saveSettingsBtn = <HTMLButtonElement>document.getElementById('saveSettings');
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
 const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
 const menu = <HTMLSelectElement>document.getElementById('edit');
@@ -15,8 +18,11 @@ menu.addEventListener('change', () => {
         currentDocument = prompt('Filename:') || DEFAULT;
     }
 
-    state.retrieve(currentDocument);
+    state.setDocumentTitle(currentDocument);
+    state.retrieve();
 });
+
+const menuBlacklist: Set<string> = new Set<string>(['settings']);
 
 const updateEditMenu = () => {
     // Clear menu
@@ -28,7 +34,7 @@ const updateEditMenu = () => {
     range(localStorage.length).forEach((i) => {
         const key = localStorage.key(i);
 
-        if (!key) {
+        if (!key || menuBlacklist.has(key)) {
             return;
         }
 
@@ -49,14 +55,39 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const saveState = () => state.persist(currentDocument);
+const updateSettings = () => {
+    const { keybinding } = settings.asBakedType();
+    const keybindingsValue = <string>keybinding || 'normal'
+
+    // Update the editor.
+    editor.setKeyboardHandler(`ace/keyboard/${keybindingsValue}`);
+
+    // Update the UI.
+    const radioButton = <HTMLInputElement>document.getElementById(keybindingsValue);
+    radioButton.checked = true;
+};
+
+const saveState = () => state.persist();
 
 export const initializeLocalStorage = () => {
     if (!localStorage.getItem(DEFAULT)) {
         localStorage.setItem(DEFAULT, '{}');
     }
+    settings.retrieve();
+    updateSettings();
     updateEditMenu();
 };
+
+saveSettingsBtn.addEventListener('click', () => {
+    const editorElement = <HTMLInputElement>document.querySelector('#editor input:checked');
+    const editorValue = editorElement.value;
+
+    settings.setState({
+        keybinding: stringToKeybinding(editorValue),
+        theme: stringToTheme('default')
+    });
+    settings.persist();
+});
 
 saveAsBtn.addEventListener('click', () => {
     const name = prompt('New filename:');

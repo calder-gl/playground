@@ -1,11 +1,13 @@
 import { defer } from 'lodash';
 import { BakedState, State } from './serializable_models/state'
+import { Settings } from './serializable_models/settings';
 
 const MAX_UNDO_SIZE = 15;
 const undoStack: BakedState[] = [];
 const redoStack: BakedState[] = [];
 
 export const state = new State();
+export const settings = new Settings();
 export const listeners: { [key in keyof BakedState]: (() => void)[] } = {};
 const undoRedoListeners: (() => void)[] = [];
 

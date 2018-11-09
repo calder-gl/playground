@@ -115,3 +115,9 @@ input {
 #toolbar button {
     margin-right: 5px;
 }
+
+fieldset input {
+    width: auto;
+    height: auto;
+    float: left;
+}
