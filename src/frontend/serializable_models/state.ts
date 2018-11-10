@@ -6,7 +6,6 @@ import { clearUndoRedo, freshStateCallbacks, listeners } from '../state';
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
 import { Persistable } from './persistable';
-import { DEFAULT } from '../localstorage';
 
 // SerializableGuidingCurve is the type representation of a guiding curve to be
 // JSON serialized.
@@ -22,6 +21,8 @@ type SerializableState = {
     source?: string;
     costFnParams?: SerializableGuidingCurve[];
 };
+
+export const DEFAULT_STATE_FILENAME = 'sample';
 
 // BakedState is the type representation of Settings used internally.
 export type BakedState = {
@@ -62,7 +63,7 @@ export class State extends Persistable<BakedState> implements Serializable<Baked
      * @constructor
      */
     constructor() {
-        super(DEFAULT);
+        super(DEFAULT_STATE_FILENAME);
         this.clearState()
     }
 

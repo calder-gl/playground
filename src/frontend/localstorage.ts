@@ -3,8 +3,8 @@ import { defaultSource } from './editor';
 import { range, throttle } from 'lodash';
 import { stringToKeybinding, stringToTheme } from './serializable_models/settings';
 import { editor } from './editor';
+import { DEFAULT_STATE_FILENAME } from './serializable_models/state';
 
-export const DEFAULT = 'sample';
 const saveSettingsBtn = <HTMLButtonElement>document.getElementById('saveSettings');
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
 const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
@@ -77,9 +77,9 @@ export const initializeLocalStorage = () => {
         state.persist()
     }
 
-    // Set the document title to the DEFAULT title if it's empty.
+    // Set the document title to the DEFAULT_STATE_FILENAME title if it's empty.
     if (!currentDocument) {
-        currentDocument = DEFAULT;
+        currentDocument = DEFAULT_STATE_FILENAME;
     }
 
     // Retrieve persistable model data from local storage.
@@ -97,7 +97,7 @@ menu.addEventListener('change', () => {
     currentDocument = menu.value;
 
     if (currentDocument === NEW) {
-        currentDocument = prompt('Filename:') || DEFAULT;
+        currentDocument = prompt('Filename:') || DEFAULT_STATE_FILENAME;
     }
 
     loadStateForDocument();
@@ -127,7 +127,7 @@ saveAsBtn.addEventListener('click', () => {
 deleteBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to delete this document?')) {
         localStorage.removeItem(currentDocument);
-        currentDocument = DEFAULT;
+        currentDocument = DEFAULT_STATE_FILENAME;
         state.deserialize('{}');
     }
 });
