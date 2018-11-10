@@ -27,7 +27,7 @@ const exportBtn = <HTMLButtonElement> document.getElementById('export');
 
 const oldLog = console.log;
 console.log = function() {
-    logElement.innerText += Array.prototype.map.call(arguments, (a: any) => `${a}`).join(', ') + '\n';
+    logElement.innerText = Array.prototype.map.call(arguments, (a: any) => `${a}`).join(', ') + '\n' + logElement.innerText;
     oldLog.apply(console, arguments);
 };
 

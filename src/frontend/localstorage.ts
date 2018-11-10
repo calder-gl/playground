@@ -1,4 +1,5 @@
 import { settings, state, onChange } from './state';
+import { defaultSource } from './editor';
 import { range, throttle } from 'lodash';
 import { stringToKeybinding, stringToTheme } from './serializable_models/settings';
 import { editor } from './editor';
@@ -7,22 +8,22 @@ const saveSettingsBtn = <HTMLButtonElement>document.getElementById('saveSettings
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
 const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
 const menu = <HTMLSelectElement>document.getElementById('edit');
+const menuBlacklist: Set<string> = new Set<string>(['settings']);
 const DEFAULT = 'sample';
 const NEW = '___new';
-let currentDocument = DEFAULT;
 
-menu.addEventListener('change', () => {
-    currentDocument = menu.value;
+let currentDocument: string;
 
-    if (currentDocument === NEW) {
-        currentDocument = prompt('Filename:') || DEFAULT;
-    }
+/* Loaders */
 
-    state.setDocumentTitle(currentDocument);
+const loadSettings = () => settings.retrieve();
+
+const loadStateForDocument = (document: string) => {
+    state.setDocumentTitle(document);
     state.retrieve();
-});
+};
 
-const menuBlacklist: Set<string> = new Set<string>(['settings']);
+/* View Updaters */
 
 const updateEditMenu = () => {
     // Clear menu
@@ -55,7 +56,7 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const updateSettings = () => {
+const updateSettingsInView = () => {
     const { keybinding } = settings.asBakedType();
     const keybindingsValue = <string>keybinding || 'normal'
 
@@ -71,12 +72,30 @@ const saveState = () => state.persist();
 
 export const initializeLocalStorage = () => {
     if (!localStorage.getItem(DEFAULT)) {
-        localStorage.setItem(DEFAULT, '{}');
+        localStorage.setItem(DEFAULT, JSON.stringify({ source: defaultSource }));
     }
-    settings.retrieve();
-    updateSettings();
+
+    if (!currentDocument) {
+        currentDocument = DEFAULT;
+        loadStateForDocument(currentDocument);
+    }
+
+    loadSettings();
+    updateSettingsInView();
     updateEditMenu();
 };
+
+/* Event Listeners */
+
+menu.addEventListener('change', () => {
+    currentDocument = menu.value;
+
+    if (currentDocument === NEW) {
+        currentDocument = prompt('Filename:') || DEFAULT;
+    }
+
+    loadStateForDocument(currentDocument);
+});
 
 saveSettingsBtn.addEventListener('click', () => {
     const editorElement = <HTMLInputElement>document.querySelector('#editor input:checked');
