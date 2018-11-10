@@ -41,6 +41,17 @@ export abstract class Persistable<T> implements Serializable<T> {
         this.deserialize(savedState);
     }
 
+    /**
+     * empty checks if the serialized object has not yet been persisted.
+     *
+     * @class Persistable
+     * @method empty
+     * @returns {boolean}
+     */
+    empty(): boolean {
+        return !localStorage.getItem(this.getDocumentTitle());
+    }
+
     // Takes the object and serialize it to a JSON string representation.
     abstract serialize(): string;
 

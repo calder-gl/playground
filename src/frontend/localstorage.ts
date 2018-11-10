@@ -4,12 +4,12 @@ import { range, throttle } from 'lodash';
 import { stringToKeybinding, stringToTheme } from './serializable_models/settings';
 import { editor } from './editor';
 
+export const DEFAULT = 'sample';
 const saveSettingsBtn = <HTMLButtonElement>document.getElementById('saveSettings');
 const saveAsBtn = <HTMLButtonElement>document.getElementById('saveAs');
 const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
 const menu = <HTMLSelectElement>document.getElementById('edit');
 const menuBlacklist: Set<string> = new Set<string>(['settings']);
-const DEFAULT = 'sample';
 const NEW = '___new';
 
 let currentDocument: string;
@@ -18,8 +18,8 @@ let currentDocument: string;
 
 const loadSettings = () => settings.retrieve();
 
-const loadStateForDocument = (document: string) => {
-    state.setDocumentTitle(document);
+const loadStateForDocument = () => {
+    state.setDocumentTitle(currentDocument);
     state.retrieve();
 };
 
@@ -71,16 +71,22 @@ const updateSettingsInView = () => {
 const saveState = () => state.persist();
 
 export const initializeLocalStorage = () => {
-    if (!localStorage.getItem(DEFAULT)) {
-        localStorage.setItem(DEFAULT, JSON.stringify({ source: defaultSource }));
+    // Set the state source with default source if it's empty.
+    if (state.empty()) {
+        state.setState({ source: defaultSource });
+        state.persist()
     }
 
+    // Set the document title to the DEFAULT title if it's empty.
     if (!currentDocument) {
         currentDocument = DEFAULT;
-        loadStateForDocument(currentDocument);
     }
 
+    // Retrieve persistable model data from local storage.
+    state.retrieve();
     loadSettings();
+
+    // Update the view to reflect the retrieved data.
     updateSettingsInView();
     updateEditMenu();
 };
@@ -94,7 +100,7 @@ menu.addEventListener('change', () => {
         currentDocument = prompt('Filename:') || DEFAULT;
     }
 
-    loadStateForDocument(currentDocument);
+    loadStateForDocument();
 });
 
 saveSettingsBtn.addEventListener('click', () => {
