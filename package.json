@@ -13,7 +13,7 @@
     "@babel/standalone": "^7.0.0-beta.51",
     "body-parser": "^1.18.2",
     "brace": "^0.11.1",
-    "calder-gl": "calder-gl/calder#master",
+    "calder-gl": "calder-gl/calder#context",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "fit-curve": "calder-gl/fit-curve#master",

@@ -53,6 +53,14 @@ const updateEditMenu = () => {
 
 const saveState = () => localStorage.setItem(currentDocument, serialize());
 
+const maybeInitializeState = () => {
+    if (localStorage.getItem(currentDocument)) {
+        return;
+    }
+
+    localStorage.setItem(currentDocument, JSON.stringify({source: defaultSource}));
+};
+
 
 saveAsBtn.addEventListener('click', () => {
     const name = prompt('New filename:');
@@ -68,19 +76,18 @@ deleteBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to delete this document?')) {
         localStorage.removeItem(currentDocument);
         currentDocument = DEFAULT;
-        loadSavedState('{}');
+        maybeInitializeState();
+        loadSavedState(<string>localStorage.getItem(DEFAULT));
     }
 });
 
 export const initializeLocalStorage = () => {
-    if (!localStorage.getItem(DEFAULT)) {
-        localStorage.setItem(DEFAULT, JSON.stringify({source: defaultSource}));
-    }
-
     if (!currentDocument) {
         currentDocument = DEFAULT;
-        loadSavedState(<string>localStorage.getItem(DEFAULT));
+        maybeInitializeState();
+        loadSavedState(<string>localStorage.getItem(currentDocument));
     }
+
     updateEditMenu();
 };
 
