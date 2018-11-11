@@ -809,7 +809,7 @@ cache-base@^1.0.1:
 
 calder-gl@calder-gl/calder#context:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/ef9b0e569578ced6da7f6e5f50d6cff96da885fb"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/279da3839546092ecd8098e94ae6609315709dbd"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
