@@ -39,7 +39,7 @@ export function loadObj(objName: string, mtlName: string, overrideMaterial?: Mat
                 if (overrideMaterial) {
                     const bakedMaterial = overrideMaterial.bake();
                     model.nodes.forEach((n: Node) => n.geometryCallback((node: GeometryNode) => {
-                        node.bakedGeometry.bakedMaterial = bakedMaterial;
+                        node.geometry.bakedMaterial = bakedMaterial;
                     }));
                 }
 
