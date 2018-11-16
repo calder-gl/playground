@@ -113,8 +113,8 @@
     "@types/express" "*"
 
 "@types/node@*":
-  version "10.12.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.5.tgz#7e7ea1a9b34d2c8d704cb0b755dffbcda34741ad"
+  version "10.12.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.7.tgz#195808b2d4b2e7c33e75e7d9b24aeee88f94660d"
 
 "@types/node@~8.10.0":
   version "8.10.37"
@@ -807,9 +807,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-calder-gl@calder-gl/calder#context:
+calder-gl@calder-gl/calder#master:
   version "0.0.0"
-  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/279da3839546092ecd8098e94ae6609315709dbd"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/84a706153819061c41d503104390be75d25e3f5b"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
