@@ -14,6 +14,7 @@ menu.addEventListener('change', () => {
 
     if (currentDocument === NEW) {
         currentDocument = prompt('Filename:') || DEFAULT;
+        maybeInitializeState();
     }
 
     const savedState = localStorage.getItem(currentDocument) || '{}';
