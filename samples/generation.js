@@ -15,8 +15,8 @@ const bone = Armature.define((root) => {
 
 generator
     .define('START', Generator.replaceWith('branch'))
-    .define('branch', (root) => {
-        const node = bone();
+    .define('branch', (root, instance) => {
+        const node = instance.add(bone());
         node.point('base').stickTo(root);
         node.scale(Math.random() * 0.4 + 0.9);
         node
@@ -29,25 +29,23 @@ generator
             .release();
         node.scale(0.8); // Shrink a bit
 
-        Generator.decorate(() => {
-          const trunk = node.point('mid').attach(branchShape);
-          trunk.scale({ x: 0.2, y: 1, z: 0.2 });
-        });
+        const trunk = instance.add(node.point('mid').attach(branchShape));
+        trunk.scale({ x: 0.2, y: 1, z: 0.2 });
 
-        Generator.addDetail({ component: 'branchOrLeaf', at: node.point('tip') });
+        instance.addDetail({ component: 'branchOrLeaf', at: node.point('tip') });
     })
     .defineWeighted('branchOrLeaf', 1, Generator.replaceWith('leaf'))
-    .defineWeighted('branchOrLeaf', 4, (root) => {
-        Generator.addDetail({ component: 'branch', at: root });
-        Generator.addDetail({ component: 'maybeBranch', at: root });
-        Generator.addDetail({ component: 'maybeBranch', at: root });
+    .defineWeighted('branchOrLeaf', 4, (root, instance) => {
+        instance.addDetail({ component: 'branch', at: root });
+        instance.addDetail({ component: 'maybeBranch', at: root });
+        instance.addDetail({ component: 'maybeBranch', at: root });
     })
-    .define('leaf', (root) => {
-        const leaf = root.attach(leafSphere);
+    .define('leaf', (root, instance) => {
+        const leaf = instance.add(root.attach(leafSphere));
         leaf.scale(Math.random() * 0.5 + 0.5);
     })
-    .maybe('maybeBranch', (root) => {
-        Generator.addDetail({ component: 'branch', at: root });
+    .maybe('maybeBranch', (root, instance) => {
+        instance.addDetail({ component: 'branch', at: root });
     })
     .wrapUpMany(['branch', 'branchOrLeaf', 'maybeBranch'], Generator.replaceWith('leaf'))
     .thenComplete(['leaf']);
