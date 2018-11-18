@@ -4,13 +4,16 @@ import { transform } from '@babel/standalone';
 import { setState, state } from './state';
 import { editor } from './editor';
 import { renderer } from './renderer';
+import { StillLoadingObj } from './loader';
 
 export const addGenerator = () => {
     const source = editor.getSession().getValue();
 
-    if (source === state.source && state.generator) {
+    if (!source || (source === state.source && state.generator)) {
         return;
     }
+
+    setState({ source });
 
     const { code } = transform(source, { sourceType: 'script' });
 
@@ -22,10 +25,14 @@ export const addGenerator = () => {
         const generator = calder.Armature.generator();
         setup(generator);
 
-        setState({ source, generator });
+        setState({ generator });
     } catch (e) {
-        console.log(e);
+        if (e instanceof StillLoadingObj) {
+            // Wait for models to load, we will automatically rerun when they are done
+        } else {
+            console.log(e);
 
-        setState({ source, generator: undefined });
+            setState({ generator: undefined });
+        }
     }
 };
