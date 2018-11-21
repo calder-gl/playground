@@ -9,6 +9,7 @@ import { addModel } from './model';
 import { ambientLightColor, renderer } from './renderer';
 import { setupOnscreenInteractions } from './interactions';
 import { initializeLocalStorage } from './localstorage';
+import { ObjLoader } from './loader';
 
 
 // Add globals for use in user code
@@ -20,6 +21,8 @@ for (const key in calder) {
 for (const key in lodash) {
     (<any>window)[key] = lodash[key];
 }
+
+(<any>window)['loadObj'] = ObjLoader.loadObj;
 
 const logElement = <HTMLDivElement> document.getElementById('log');
 const runBtn = <HTMLButtonElement> document.getElementById('run');
@@ -42,6 +45,7 @@ window.onbeforeunload = () => {
 
 // Set initial state
 onFreshState(() => {
+    ObjLoader.clearModelCache();
     initializeLocalStorage();
     addCostFn();
     addCostFunctionViz();

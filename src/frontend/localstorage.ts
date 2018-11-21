@@ -14,13 +14,25 @@ const NEW = '___new';
 
 let currentDocument: string;
 
+/* Persisters */
+
+const saveState    = () => state.persist();
+const saveSettings = () => settings.persist();
+
+const maybeInitializeState = () => {
+    // Set the state source with default source if it's empty.
+    if (!state.empty()) return;
+    state.setState({ source: defaultSource });
+    state.persist()
+};
+
 /* Loaders */
 
-const loadSettings = () => settings.retrieve();
-
+const loadState            = () => state.retrieve();
+const loadSettings         = () => settings.retrieve();
 const loadStateForDocument = () => {
     state.setDocumentTitle(currentDocument);
-    state.retrieve();
+    loadState();
 };
 
 /* View Updaters */
@@ -68,14 +80,8 @@ const updateSettingsInView = () => {
     radioButton.checked = true;
 };
 
-const saveState = () => state.persist();
-
 export const initializeLocalStorage = () => {
-    // Set the state source with default source if it's empty.
-    if (state.empty()) {
-        state.setState({ source: defaultSource });
-        state.persist()
-    }
+    maybeInitializeState();
 
     // Set the document title to the DEFAULT_STATE_FILENAME title if it's empty.
     if (!currentDocument) {
@@ -83,7 +89,8 @@ export const initializeLocalStorage = () => {
     }
 
     // Retrieve persistable model data from local storage.
-    state.retrieve();
+    loadState();
+    loadState();
     loadSettings();
 
     // Update the view to reflect the retrieved data.
@@ -111,7 +118,7 @@ saveSettingsBtn.addEventListener('click', () => {
         keybinding: stringToKeybinding(editorValue),
         theme: stringToTheme('default')
     });
-    settings.persist();
+    saveSettings();
 });
 
 saveAsBtn.addEventListener('click', () => {
@@ -128,6 +135,7 @@ deleteBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to delete this document?')) {
         localStorage.removeItem(currentDocument);
         currentDocument = DEFAULT_STATE_FILENAME;
+        maybeInitializeState();
         state.deserialize('{}');
     }
 });
