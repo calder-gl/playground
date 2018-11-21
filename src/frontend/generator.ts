@@ -13,7 +13,7 @@ export const addGenerator = () => {
         return;
     }
 
-    setState({ source });
+    state.setState({ source });
 
     const { code } = transform(source, { sourceType: 'script' });
 
