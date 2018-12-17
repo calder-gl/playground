@@ -22,14 +22,19 @@ const light1: calder.Light = calder.Light.create({
 // Add lights to the renderer
 renderer.addLight(light1);
 
+const rendererSettings = {
+    showVectorField: true,
+    showBones: false
+};
+
 // Draw the armature
 const draw = () => {
     return {
         objects: state.model ? [state.model] : [],
         debugParams: {
             drawAxes: true,
-            drawArmatureBones: false,
-            drawVectorField: state.vectorField,
+            drawArmatureBones: rendererSettings.showBones,
+            drawVectorField: rendererSettings.showVectorField ? state.vectorField : undefined,
             drawGuidingCurve: state.guidingCurves && state.guidingCurves.toJS(),
             drawPencilLine: state.pencilLine
         }
@@ -38,3 +43,14 @@ const draw = () => {
 
 // Apply the constraints each frame.
 renderer.eachFrame(draw);
+
+// Set up checkboxes for settings
+const vectorFieldCheckbox = <HTMLInputElement>document.getElementById('vectorField');
+vectorFieldCheckbox.addEventListener('change', () => {
+    rendererSettings.showVectorField = vectorFieldCheckbox.checked;
+});
+
+const bonesCheckbox = <HTMLInputElement>document.getElementById('bones');
+bonesCheckbox.addEventListener('change', () => {
+    rendererSettings.showBones = bonesCheckbox.checked;
+});

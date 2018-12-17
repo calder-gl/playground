@@ -62,7 +62,7 @@ runBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-    if (event.key == 'r' && event.ctrlKey) {
+    if (event.key == 'r' && (event.ctrlKey || event.altKey)) {
         runBtn.click();
         event.stopPropagation();
         return false;

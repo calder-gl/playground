@@ -23,6 +23,15 @@ html
           div#toolbar.controls
             button#run Save and Run (Ctrl-R)
             button#export.button-outline Export .obj
+
+          div#rendererControls.controls
+            div.input
+              label(for=vectorField) Show vector field
+              input#vectorField(type='checkbox', checked)
+            div.input
+              label(for=bones) Show bones
+              input#bones(type='checkbox')
+
           pre
             code#log
 
@@ -33,15 +42,15 @@ html
             div.input
               label Distance multiplier
               div.group
-                input#distance1(type=number, disabled)
+                input#distance1(type='number', disabled)
                 span +
-                input#distance2(type=number, disabled)
+                input#distance2(type='number', disabled)
                 span <i>x</i> +
-                input#distance3(type=number, disabled)
+                input#distance3(type='number', disabled)
                 span <i>x</i><sup>2</sup>
             div.input
               label Alignment multiplier
-              input#alignmentMultiplier(type=number, disabled)
+              input#alignmentMultiplier(type='number', disabled)
             div.input
               label Alignment offset
               div.group
@@ -50,7 +59,7 @@ html
                     span -1
                     span.description (lenient)
                   span &le;
-                input#alignmentOffset(type=number, disabled)
+                input#alignmentOffset(type='number', disabled)
                 div.endpoint
                   span &le;
                   div.num

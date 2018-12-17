@@ -19,12 +19,14 @@ type ControlcontrolState = {
     mode: ControlMode;
     selectedHandle: number | null;
     dragged: boolean;
+    lastMouse: { x: number, y: number } | null;
 };
 
 const controlState: ControlcontrolState = {
     mode: ControlMode.CAMERA_ROTATE,
     selectedHandle: null,
-    dragged: false
+    dragged: false,
+    lastMouse: null
 };
 
 enum MouseButton {
@@ -40,6 +42,7 @@ function handleMouseDown(event: MouseEvent) {
     window.addEventListener('mouseup', handleMouseUp);
 
     controlState.dragged = false;
+    controlState.lastMouse = { x: event.clientX, y: event.clientY };
 
     const button = <MouseButton> event.button;
 
@@ -92,6 +95,8 @@ function handleMouseUp(event: MouseEvent) {
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('mouseup', handleMouseUp);
 
+    controlState.lastMouse = null;
+
     const { guidingCurves } = state;
     if (!controlState.dragged && guidingCurves) {
         const boundingRect = renderer.stage.getBoundingClientRect();
@@ -140,11 +145,19 @@ function handleMouseMove(event: MouseEvent) {
     event.stopPropagation();
     event.preventDefault();
 
-    if (event.movementX === 0 && event.movementY === 0) {
+    const nextMouse = { x: event.clientX, y: event.clientY };
+
+    if (!controlState.lastMouse) {
         return;
     }
 
+    const movement = {
+        x: nextMouse.x - controlState.lastMouse.x,
+        y: nextMouse.y - controlState.lastMouse.y
+    };
+
     controlState.dragged = true;
+    controlState.lastMouse = nextMouse;
 
     if (controlState.mode === ControlMode.DRAW_CURVE) {
         const { pencilLine } = state;
@@ -160,7 +173,7 @@ function handleMouseMove(event: MouseEvent) {
     } else if (controlState.mode === ControlMode.DRAG_CURVE) {
         // Create a direction vector representing the relative movement we want, normalized to the screen size
         const direction = vec3ToVector(
-            vec3.set(tmpDirection, event.movementX / renderer.width, -event.movementY / renderer.height, 0));
+            vec3.set(tmpDirection, movement.x / renderer.width, -movement.y / renderer.height, 0));
 
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
@@ -219,7 +232,7 @@ function handleMouseMove(event: MouseEvent) {
     } else if (controlState.mode === ControlMode.CAMERA_MOVE) {
         // Create a direction vector representing the relative movement we want
         const direction = vec3ToVector(
-            vec3.set(tmpDirection, -event.movementX / 100, event.movementY / 100, 0));
+            vec3.set(tmpDirection, -movement.x / 100, movement.y / 100, 0));
 
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
@@ -240,7 +253,7 @@ function handleMouseMove(event: MouseEvent) {
         renderer.camera.rotateAboutTarget(quat.setAxisAngle(
             tmpQuat,
             Camera.up,
-            -event.movementX / 100
+            -movement.x / 100
         ));
 
         // Then, to find the secondary axis to rotate around, we need the cross product of the
@@ -253,7 +266,7 @@ function handleMouseMove(event: MouseEvent) {
         const direction = vec3.sub(tmpDirection, renderer.camera.target, renderer.camera.position)
         vec3.normalize(direction, direction);
         const directionDotUp = vec3.dot(Camera.up, direction);
-        if (Math.abs(directionDotUp) < 0.98 || event.movementY * directionDotUp > 0) {
+        if (Math.abs(directionDotUp) < 0.98 || movement.y * directionDotUp > 0) {
             const axis = vec3.cross(
                 tmpVec3,
                 Camera.up,
@@ -262,7 +275,7 @@ function handleMouseMove(event: MouseEvent) {
                 renderer.camera.rotateAboutTarget(quat.setAxisAngle(
                     tmpQuat,
                     axis,
-                    event.movementY / 100
+                    movement.y / 100
                 ));
         }
     }
@@ -271,7 +284,7 @@ function handleMouseMove(event: MouseEvent) {
 function handleWheel(event: WheelEvent) {
     // Move towards or away from the camera's target relative to the scroll amount, avoiding
     // moving ALL the way to the target by capping the amount at 0.9 instead of 1.
-    renderer.camera.moveTowardsTarget(Math.min(0.9, event.deltaY / 100));
+    renderer.camera.moveTowardsTarget(Math.min(0.9, event.deltaY / 200));
 
     event.stopPropagation();
     event.preventDefault();

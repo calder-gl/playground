@@ -43,6 +43,7 @@ pre {
 
 pre > code {
     width: 100%;
+    margin: 0;
 }
 
 #source {
@@ -78,14 +79,22 @@ pre > code {
 
 label {
     font-weight: lighter;
-    width: 180px;
+    width: 150px;
     padding: 0.6rem 0;
 }
 
 input {
     flex: 1 1;
-    padding: 5px;
+    padding: 5px !important;
     width: 0;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    flex: 0;
+    margin-bottom: 0;
+    flex: 0;
+    align-self: center;
 }
 
 .group {
