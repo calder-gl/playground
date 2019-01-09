@@ -7,7 +7,9 @@
   "scripts": {
     "compile": "grunt",
     "dev": "NODE_ENV=development nodemon ./bin/run",
-    "server": "node ./bin/run"
+    "server": "node ./bin/run",
+    "postinstall": "npm run compile",
+    "start": "npm run server"
   },
   "dependencies": {
     "@babel/standalone": "^7.0.0-beta.51",
