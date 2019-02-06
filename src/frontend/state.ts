@@ -16,6 +16,7 @@ export type State = {
     selectedCurve?: number | null;
     generating?: boolean;
     pencilLine?: {x: number; y: number}[];
+    maxDepth?: number;
 };
 
 type SerializableGuidingCurve = {
@@ -28,6 +29,7 @@ type SerializableGuidingCurve = {
 export type SerializableState = {
     source?: string;
     costFnParams?: SerializableGuidingCurve[];
+    maxDepth?: number;
 };
 
 export const state: State = {};
@@ -136,6 +138,8 @@ export const serialize = (): string => {
         };
     });
 
+    object.maxDepth = state.maxDepth;
+
     return JSON.stringify(object);
 };
 
@@ -159,6 +163,8 @@ export const loadSavedState = (serialized: string) => {
             bezier: new Bezier(curve.bezier)
         };
     }));
+
+    freshState.maxDepth = object.maxDepth;
 
     setState(freshState);
     freshStateCallbacks.forEach((callback) => callback());
