@@ -106,14 +106,18 @@ export const addModel = () => {
         setState({ generating: true });
         const { maxDepth = DEFAULT_MAX_DEPTH } = state;
 
+        // If maxDepth is less than 40, we should still have no heuristic
+        // for the final round of generation
+        const heuristicCutoff = Math.min(40, maxDepth);
+
         generatorTask = state.generator.generateSOSMC(
             {
                 start: 'START',
                 sosmcDepth: maxDepth,
                 samples: getSamplesCurve(maxDepth),
                 heuristicScale: (generation: number) => {
-                    if (generation <= 40) {
-                        return 0.013 - generation / 40 * 0.013;
+                    if (generation <= heuristicCutoff) {
+                        return 0.013 - generation / heuristicCutoff * 0.013;
                     } else {
                         return 0;
                     }
