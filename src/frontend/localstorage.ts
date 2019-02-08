@@ -1,4 +1,4 @@
-import { loadSavedState, serialize, onChange } from './state';
+import { SerializableState, loadSavedState, serialize, onChange } from './state';
 import { defaultSource } from './editor';
 import { range, throttle } from 'lodash';
 
@@ -92,13 +92,10 @@ export const initializeLocalStorage = () => {
     updateEditMenu();
 };
 
-onChange('source', throttle(
-    saveState,
-    100,
-    { trailing: true }
-));
-onChange('costFnParams', throttle(
-    saveState,
-    100,
-    { trailing: true }
-));
+['source', 'costFnParams', 'maxDepth'].forEach((key: keyof SerializableState) => {
+    onChange(key, throttle(
+        saveState,
+        100,
+        { trailing: true }
+    ));
+});

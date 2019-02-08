@@ -91,9 +91,8 @@ input {
 
 input[type="checkbox"] {
     width: auto;
-    flex: 0;
+    flex: 1 0;
     margin-bottom: 0;
-    flex: 0;
     align-self: center;
 }
 
