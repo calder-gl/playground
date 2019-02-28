@@ -85,19 +85,26 @@ exportBtn.addEventListener('click', () => {
 
     const obj = state.model.exportOBJ('calderExport', ambientLightColor);
 
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    document.body.appendChild(link);
+    const objLink = document.createElement('a');
+    objLink.style.display = 'none';
+    document.body.appendChild(objLink);
 
     // Download obj
-    link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(obj.obj)}`);
-    link.setAttribute('download', 'calderExport.obj');
-    link.click();
+    const objBlob = new Blob([obj.obj], { type: 'text/plain;charset=utf-8' });
+    objLink.setAttribute('href', URL.createObjectURL(objBlob));
+    objLink.setAttribute('download', 'calderExport.obj');
+    objLink.click();
+
+    const mtlLink = document.createElement('a');
+    mtlLink.style.display = 'none';
+    document.body.appendChild(mtlLink);
 
     // Download mtl
-    link.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(obj.mtl)}`);
-    link.setAttribute('download', 'calderExport.mtl');
-    link.click();
+    const mtlBlob = new Blob([obj.mtl], { type: 'text/plain;charset=utf-8' });
+    mtlLink.setAttribute('href', URL.createObjectURL(mtlBlob));
+    mtlLink.setAttribute('download', 'calderExport.mtl');
+    mtlLink.click();
 
-    document.body.removeChild(link);
+    document.body.removeChild(objLink);
+    document.body.removeChild(mtlLink);
 });
