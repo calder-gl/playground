@@ -35,7 +35,7 @@ snake.define('base', (spawn) => {
     const base = bone();
     base.point('base').stickTo(spawn);
     base.hold(base.point('handle')).rotate(90);
-    
+
     snake.addDetail({component: 'segment or head', at: base.point('base')});
     snake.addDetail({component: 'tail', at: base.point('base')});
 });
@@ -84,4 +84,3 @@ renderer.camera.moveTo({ x: 8, y: 20, z: 25 });
 renderer.camera.lookAt({ x: 2, y: 2, z: -4 });
 
 renderer.draw([node], {drawAxes: true, drawArmatureBones: false});
-
