@@ -10,17 +10,26 @@ const DEFAULT = 'sample';
 const NEW = '___new';
 let currentDocument: string;
 
-menu.addEventListener('change', () => {
-    currentDocument = menu.value;
+/* Persisters */
 
-    if (currentDocument === NEW) {
-        currentDocument = prompt('Filename:') || DEFAULT;
-        maybeInitializeState();
-    }
+const saveState = () => currentState.persist();
 
-    const savedState = localStorage.getItem(currentDocument) || '{}';
-    currentState.deserialize(savedState);
-});
+const maybeInitializeState = () => {
+    // Set the state source with default source if it's empty.
+    if (!currentState.empty()) return;
+    currentState.setState({ source: defaultSource });
+    currentState.persist()
+};
+
+/* Loaders */
+
+const loadState = () => currentState.retrieve();
+const loadStateForDocument = () => {
+    currentState.setDocumentTitle(currentDocument);
+    loadState();
+};
+
+/* View Updater Functions */
 
 const updateEditMenu = () => {
     // Clear menu
@@ -53,16 +62,28 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const saveState = () => localStorage.setItem(currentDocument, currentState.serialize());
-
-const maybeInitializeState = () => {
-    if (localStorage.getItem(currentDocument)) {
-        return;
+export const initializeLocalStorage = () => {
+    if (!currentDocument) {
+        currentDocument = DEFAULT;
+        maybeInitializeState();
+        currentState.deserialize(<string>localStorage.getItem(currentDocument));
     }
 
-    localStorage.setItem(currentDocument, JSON.stringify({ source: defaultSource }));
+    updateEditMenu();
 };
 
+/* Event Listeners */
+
+menu.addEventListener('change', () => {
+    currentDocument = menu.value;
+
+    if (currentDocument === NEW) {
+        currentDocument = prompt('Filename:') || DEFAULT;
+        maybeInitializeState();
+    }
+
+    loadStateForDocument();
+});
 
 saveAsBtn.addEventListener('click', () => {
     const name = prompt('New filename:');
@@ -82,16 +103,6 @@ deleteBtn.addEventListener('click', () => {
         currentState.deserialize(<string>localStorage.getItem(DEFAULT));
     }
 });
-
-export const initializeLocalStorage = () => {
-    if (!currentDocument) {
-        currentDocument = DEFAULT;
-        maybeInitializeState();
-        currentState.deserialize(<string>localStorage.getItem(currentDocument));
-    }
-
-    updateEditMenu();
-};
 
 ['source', 'costFnParams', 'maxDepth'].forEach((key: keyof SerializableState) => {
     onChange(key, throttle(
