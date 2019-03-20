@@ -1,4 +1,5 @@
-import { SerializableState, loadSavedState, serialize, onChange } from './state';
+import { currentState, onChange } from './state';
+import { SerializableState } from './serializable_models/state';
 import { defaultSource } from './editor';
 import { range, throttle } from 'lodash';
 
@@ -18,7 +19,7 @@ menu.addEventListener('change', () => {
     }
 
     const savedState = localStorage.getItem(currentDocument) || '{}';
-    loadSavedState(savedState);
+    currentState.deserialize(savedState);
 });
 
 const updateEditMenu = () => {
@@ -52,14 +53,14 @@ const updateEditMenu = () => {
     menu.appendChild(newOption);
 };
 
-const saveState = () => localStorage.setItem(currentDocument, serialize());
+const saveState = () => localStorage.setItem(currentDocument, currentState.serialize());
 
 const maybeInitializeState = () => {
     if (localStorage.getItem(currentDocument)) {
         return;
     }
 
-    localStorage.setItem(currentDocument, JSON.stringify({source: defaultSource}));
+    localStorage.setItem(currentDocument, JSON.stringify({ source: defaultSource }));
 };
 
 
@@ -78,7 +79,7 @@ deleteBtn.addEventListener('click', () => {
         localStorage.removeItem(currentDocument);
         currentDocument = DEFAULT;
         maybeInitializeState();
-        loadSavedState(<string>localStorage.getItem(DEFAULT));
+        currentState.deserialize(<string>localStorage.getItem(DEFAULT));
     }
 });
 
@@ -86,7 +87,7 @@ export const initializeLocalStorage = () => {
     if (!currentDocument) {
         currentDocument = DEFAULT;
         maybeInitializeState();
-        loadSavedState(<string>localStorage.getItem(currentDocument));
+        currentState.deserialize(<string>localStorage.getItem(currentDocument));
     }
 
     updateEditMenu();

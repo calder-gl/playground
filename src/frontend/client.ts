@@ -1,7 +1,8 @@
 import * as calder from 'calder-gl';
 import * as lodash from 'lodash';
 
-import { onFreshState, state } from './state';
+import { currentState } from './state';
+import { BakedState } from './serializable_models/state';
 
 import { addCostFn, addCostFunctionViz } from './costFn';
 import { addGenerator } from './generator';
@@ -10,7 +11,6 @@ import { ambientLightColor, renderer } from './renderer';
 import { setupOnscreenInteractions } from './interactions';
 import { initializeLocalStorage } from './localstorage';
 import { ObjLoader } from './loader';
-
 
 // Add globals for use in user code
 
@@ -24,9 +24,9 @@ for (const key in lodash) {
 
 (<any>window)['loadObj'] = ObjLoader.loadObj;
 
-const logElement = <HTMLDivElement> document.getElementById('log');
-const runBtn = <HTMLButtonElement> document.getElementById('run');
-const exportBtn = <HTMLButtonElement> document.getElementById('export');
+const logElement = <HTMLDivElement>document.getElementById('log');
+const runBtn = <HTMLButtonElement>document.getElementById('run');
+const exportBtn = <HTMLButtonElement>document.getElementById('export');
 
 const oldLog = console.log;
 console.log = function() {
@@ -42,9 +42,8 @@ window.onbeforeunload = () => {
     return 'Are you sure you want to leave?';
 };
 
-
 // Set initial state
-onFreshState(() => {
+currentState.onFreshState(() => {
     ObjLoader.clearModelCache();
     initializeLocalStorage();
     addCostFn();
@@ -52,7 +51,6 @@ onFreshState(() => {
     addGenerator();
     addModel();
 });
-
 
 // Add UI hooks
 runBtn.addEventListener('click', () => {
@@ -70,20 +68,20 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
     return true;
 });
 
-
-const webglElement = <HTMLDivElement> document.getElementById('webgl');
+const webglElement = <HTMLDivElement>document.getElementById('webgl');
 webglElement.appendChild(renderer.stage);
 
 setupOnscreenInteractions();
 
-
 // OBJ export
 exportBtn.addEventListener('click', () => {
-    if (!state.model) {
+    const currentBakedState: BakedState = currentState.asBakedType();
+
+    if (!currentBakedState.model) {
         return;
     }
 
-    const obj = state.model.exportOBJ('calderExport', ambientLightColor);
+    const obj = currentBakedState.model.exportOBJ('calderExport', ambientLightColor);
 
     const objLink = document.createElement('a');
     objLink.style.display = 'none';

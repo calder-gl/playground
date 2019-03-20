@@ -7,13 +7,13 @@ import { List } from 'immutable';
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
 
-import { commit, onChange, setState, state } from './state';
+import { commit, onChange, currentState } from './state';
 import { addModel } from './model';
 import { renderer } from './renderer';
 
 const costControls = <HTMLDivElement>document.getElementById('cost');
 const distanceMultiplierControls = range(3)
-    .map((i) => <HTMLInputElement>document.getElementById(`distance${i+1}`));
+    .map((i) => <HTMLInputElement>document.getElementById(`distance${i + 1}`));
 const alignmentOffsetControl = <HTMLInputElement>document.getElementById('alignmentOffset');
 const alignmentMultiplierControl = <HTMLInputElement>document.getElementById('alignmentMultiplier');
 const deleteBtn = <HTMLButtonElement>document.getElementById('delete');
@@ -45,22 +45,22 @@ const initialCostFnParams = [
 ]
 
 export const addCostFn = () => {
-    let { costFnParams } = state;
+    let { costFnParams } = currentState.asBakedType();
     if (!costFnParams) {
         costFnParams = List(initialCostFnParams);
     }
-    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS(), );
+    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS());
 
-    setState({ costFnParams, costFn });
+    currentState.setState({ costFnParams, costFn });
 };
 
 export const addCostFunctionViz = () => {
-    const { costFn, costFnParams, selectedCurve } = state;
+    const { costFn, costFnParams, selectedCurve } = currentState.asBakedType();
     if (!costFn || !costFnParams) {
         return;
     }
 
-    const vectorField = costFn.generateVectorField(3, 0.5, {x: 0, y: 2, z: 0});
+    const vectorField = costFn.generateVectorField(3, 0.5, { x: 0, y: 2, z: 0 });
     const guidingCurves = List(costFn.generateGuidingCurve().map((path: [number, number, number][], index: number) => {
         return {
             path,
@@ -69,11 +69,13 @@ export const addCostFunctionViz = () => {
         };
     }));
 
-    setState({ vectorField, guidingCurves });
+    currentState.setState({ vectorField, guidingCurves });
 };
 
-export const addNewCurve = (polyline: {x: number; y: number}[]) => {
-    const [ bezier ] = fitCurve(polyline.map((point) => [point.x, point.y]), 100, undefined, true);
+export const addNewCurve = (polyline: { x: number; y: number }[]) => {
+    const currentBakedState: BakedState = currentState.asBakedType();
+
+    const [bezier] = fitCurve(polyline.map((point) => [point.x, point.y]), 100, undefined, true);
     const depth = vec3.distance(renderer.camera.position, renderer.camera.target);
 
     const transform = mat4.invert(mat4.create(), renderer.camera.getTransform());
@@ -94,23 +96,23 @@ export const addNewCurve = (polyline: {x: number; y: number}[]) => {
         return point;
     });
 
-    const lastCurve = state.costFnParams && state.costFnParams[state.costFnParams.size - 1];
+    const lastCurve = currentBakedState.costFnParams && currentBakedState.costFnParams[currentBakedState.costFnParams.size - 1];
 
     const curve = {
-        bezier: new Bezier(bezier3D.map(([x, y, z]) => { return {x, y, z}; })),
+        bezier: new Bezier(bezier3D.map(([x, y, z]) => { return { x, y, z }; })),
         distanceMultiplier: lastCurve ? [...lastCurve.distanceMultiplier] : [...scale],
         alignmentMultiplier: lastCurve ? lastCurve.alignmentMultiplier : 500,
         alignmentOffset: lastCurve ? lastCurve.alignmentOffset : 0.7
     };
 
-    let { costFnParams = List([]) } = state;
+    let { costFnParams = List([]) } = currentBakedState;
     costFnParams = costFnParams.push(curve);
 
-    setState({ costFnParams });
+    currentState.setState({ costFnParams });
 }
 
 onChange('selectedCurve', () => {
-    const { guidingCurves, costFnParams, selectedCurve } = state;
+    const { guidingCurves, costFnParams, selectedCurve } = currentState.asBakedType();
     if (!costFnParams) {
         return;
     }
@@ -120,7 +122,7 @@ onChange('selectedCurve', () => {
             curve.selected = index === selectedCurve;
         });
 
-        setState({ guidingCurves });
+        currentState.setState({ guidingCurves });
     }
 
     if (selectedCurve !== null && selectedCurve !== undefined) {
@@ -144,7 +146,7 @@ onChange('selectedCurve', () => {
 });
 
 const updateCostFnParams = throttle(() => {
-    let { costFnParams, selectedCurve } = state;
+    let { costFnParams, selectedCurve } = currentState.asBakedType();
     if (!costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }
@@ -166,14 +168,14 @@ const updateCostFnParams = throttle(() => {
 
     costFnParams = costFnParams.set(selectedCurve, updatedParams);
 
-    setState({ costFnParams });
+    currentState.setState({ costFnParams });
     addCostFn();
     addModel();
     commit();
 }, 100, { trailing: true });
 
 const deleteCurve = () => {
-    let { guidingCurves, costFnParams, selectedCurve } = state;
+    let { guidingCurves, costFnParams, selectedCurve } = currentState.asBakedType();
     if (!guidingCurves || !costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }
@@ -186,7 +188,7 @@ const deleteCurve = () => {
     guidingCurves = guidingCurves.delete(selectedCurve);
     costFnParams = costFnParams.delete(selectedCurve);
 
-    setState({ guidingCurves, costFnParams, selectedCurve: null });
+    currentState.setState({ guidingCurves, costFnParams, selectedCurve: null });
     addCostFn();
     addCostFunctionViz();
     addModel();

@@ -1,6 +1,6 @@
 import * as calder from 'calder-gl';
 
-import { state } from './state';
+import { currentState } from './state';
 
 // Create the renderer
 export const ambientLightColor = calder.RGBColor.fromRGB(90, 90, 90);
@@ -29,14 +29,16 @@ const rendererSettings = {
 
 // Draw the armature
 const draw = () => {
+    const { model, vectorField, guidingCurves, pencilLine } = currentState.asBakedType();
+
     return {
-        objects: state.model ? [state.model] : [],
+        objects: model ? [model] : [],
         debugParams: {
             drawAxes: true,
             drawArmatureBones: rendererSettings.showBones,
-            drawVectorField: rendererSettings.showVectorField ? state.vectorField : undefined,
-            drawGuidingCurve: state.guidingCurves && state.guidingCurves.toJS(),
-            drawPencilLine: state.pencilLine
+            drawVectorField: rendererSettings.showVectorField ? vectorField : undefined,
+            drawGuidingCurve: guidingCurves && guidingCurves.toJS(),
+            drawPencilLine: pencilLine
         }
     };
 };

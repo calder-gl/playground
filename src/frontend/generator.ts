@@ -1,38 +1,37 @@
 import * as calder from 'calder-gl';
 import { transform } from '@babel/standalone';
 
-import { setState, state } from './state';
+import { currentState } from './state';
 import { editor } from './editor';
 import { renderer } from './renderer';
 import { StillLoadingObj } from './loader';
 
 export const addGenerator = () => {
-    const source = editor.getSession().getValue();
+    const { source, generator } = currentState.asBakedType();
+    const editorSource = editor.getSession().getValue();
 
-    if (!source || (source === state.source && state.generator)) {
+    if (!editorSource || (editorSource === source && generator)) {
         return;
     }
 
-    setState({ source });
+    currentState.setState({ source: editorSource });
 
-    const { code } = transform(source, { sourceType: 'script' });
+    const { code } = transform(editorSource, { sourceType: 'script' });
 
     const setup = new Function('generator', code);
 
     renderer.cleanBakedGeometryBuffers();
 
     try {
-        const generator = calder.Armature.generator();
-        setup(generator);
-
-        setState({ generator });
+        const newGenerator = calder.Armature.generator();
+        setup(newGenerator);
+        currentState.setState({ generator: newGenerator });
     } catch (e) {
         if (e instanceof StillLoadingObj) {
             // Wait for models to load, we will automatically rerun when they are done
         } else {
             console.log(e);
-
-            setState({ generator: undefined });
+            currentState.setState({ generator: undefined });
         }
     }
 };
