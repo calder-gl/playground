@@ -3,9 +3,9 @@ import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 
 import { Completion } from './Completion';
-import { onChange, state } from './state';
+import { onChange, currentState } from './state';
 
-const codeElement = <HTMLScriptElement> document.getElementById('code');
+const codeElement = <HTMLScriptElement>document.getElementById('code');
 export const defaultSource = codeElement.innerText;
 
 export const editor = ace.edit('source');
@@ -17,8 +17,9 @@ editor.setOptions({
 });
 
 onChange('source', () => {
-    if (editor.getSession().getValue() === state.source) {
-      return;
+    const { source } = currentState.asBakedType();
+    if (editor.getSession().getValue() === source) {
+        return;
     }
-    editor.getSession().setValue(state.source || '');
+    editor.getSession().setValue(source || '');
 });

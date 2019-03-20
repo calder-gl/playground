@@ -1,7 +1,5 @@
 // TODO: rename as undo/redo stack or events.ts
 
-import * as calder from 'calder-gl';
-
 // tslint:disable-next-line:import-name
 import { BakedState, State } from './serializable_models/state';
 

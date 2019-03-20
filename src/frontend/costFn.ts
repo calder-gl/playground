@@ -3,6 +3,7 @@ import { range, throttle } from 'lodash';
 import { fitCurve } from 'fit-curve';
 import { mat4, vec4, vec3 } from 'gl-matrix';
 import { List } from 'immutable';
+import { BakedState } from './serializable_models/state';
 
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');

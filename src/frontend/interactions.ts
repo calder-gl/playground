@@ -117,7 +117,7 @@ function handleMouseUp(event: MouseEvent) {
         addModel();
         commit();
     } else if (controlState.mode === ControlMode.DRAW_CURVE) {
-        const { pencilLine } = state;
+        const { pencilLine } = currentState.asBakedType();
         if (pencilLine) {
             addNewCurve(pencilLine);
             addCostFn();
@@ -125,7 +125,7 @@ function handleMouseUp(event: MouseEvent) {
             addModel();
             currentState.setState({ pencilLine: undefined });
 
-            const { guidingCurves } = state;
+            const { guidingCurves } = currentState.asBakedType();
             if (guidingCurves) {
                 const selectedCurve = guidingCurves.size - 1;
                 currentState.setState({ selectedCurve, guidingCurves });
@@ -172,7 +172,6 @@ function handleMouseMove(event: MouseEvent) {
             pencilLine.push({ x, y });
             currentState.setState({ pencilLine });
         }
-
     } else if (controlState.mode === ControlMode.DRAG_CURVE) {
         // Create a direction vector representing the relative movement we want, normalized to the screen size
         const direction = vec3ToVector(
@@ -183,8 +182,7 @@ function handleMouseMove(event: MouseEvent) {
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());
 
-        if (inverseTransform && guidingCurves && costFnParams && selectedCurve !== undefined
-            && selectedCurve !== null && controlState.selectedHandle !== null) {
+        if (inverseTransform && guidingCurves && costFnParams && selectedCurve !== undefined && selectedCurve !== null && controlState.selectedHandle !== null) {
             const points = costFnParams.get(selectedCurve).bezier.points;
 
             // We need to scale the direction vector so that when the control point moves, it moves the right
@@ -221,7 +219,7 @@ function handleMouseMove(event: MouseEvent) {
             const bezier = new Bezier(points);
 
             const newParams = { ...costFnParams.get(selectedCurve), bezier };
-            const costFnParams = costFnParams.set(selectedCurve, newParams);
+            costFnParams.set(selectedCurve, newParams);
 
             // Update the path that gets visualized without replacing the whole cost function yet;
             // since that's a more expensive operation, we'll do that on mouse up
@@ -230,7 +228,7 @@ function handleMouseMove(event: MouseEvent) {
                 bezier,
                 path: bezier.getLUT().map((p) => [p.x, p.y, p.z])
             };
-            const guidingCurves = guidingCurves.set(selectedCurve, newGuidingCurve);
+            guidingCurves.set(selectedCurve, newGuidingCurve);
 
             currentState.setState({ costFnParams, guidingCurves });
         }

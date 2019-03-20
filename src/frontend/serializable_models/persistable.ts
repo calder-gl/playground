@@ -9,45 +9,45 @@ export abstract class Persistable<T> implements Serializable<T> {
     documentTitle: string;
 
     /**
-    * constructor creates a new Persistable concretion object.
-    *
-    * @class State
-    * @constructor
-    * @param {string} title The key associated with the localstorage object
-    *   persisted.
-    */
+     * constructor creates a new Persistable concretion object.
+     *
+     * @class State
+     * @constructor
+     * @param {string} title The key associated with the localstorage object
+     *   persisted.
+     */
     constructor(title?: string) {
         this.documentTitle = title || '';
     }
 
     /**
-    * persist persists the serialized object representation to local storage.
-    *
-    * @class Persistable
-    * @method persist
-    */
+     * persist persists the serialized object representation to local storage.
+     *
+     * @class Persistable
+     * @method persist
+     */
     persist() {
         localStorage.setItem(this.getDocumentTitle(), this.serialize());
     }
 
     /**
-    * Retrieves an JSON serialized object from local storage.
-    *
-    * @class Persistable
-    * @method retrieve
-    */
+     * Retrieves an JSON serialized object from local storage.
+     *
+     * @class Persistable
+     * @method retrieve
+     */
     retrieve() {
         const savedState = localStorage.getItem(this.getDocumentTitle()) || '{}';
         this.deserialize(savedState);
     }
 
     /**
-    * empty checks if the serialized object has not yet been persisted.
-    *
-    * @class Persistable
-    * @method empty
-    * @returns {boolean}
-    */
+     * empty checks if the serialized object has not yet been persisted.
+     *
+     * @class Persistable
+     * @method empty
+     * @returns {boolean}
+     */
     empty(): boolean {
         return !localStorage.getItem(this.getDocumentTitle());
     }
@@ -65,6 +65,10 @@ export abstract class Persistable<T> implements Serializable<T> {
     // Sets the state of the object with a partial implementation of the
     // TypeScript type T.
     abstract setState(newState: Partial<T>);
+
+    // Pushes callbacks contained in scope of function to class which implements
+    // the interface.
+    abstract onFreshState(callback: () => void);
 
     // Cleans the object's state by clearing all the properties of the object.
     abstract clearState();
