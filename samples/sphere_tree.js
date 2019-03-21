@@ -1,3 +1,5 @@
+// Simple tree
+
 // Setup leaf
 const leafColor = RGBColor.fromRGB(204, 255, 204);
 const leafSphere = Shape.sphere(Material.create({ color: leafColor, shininess: 100 }));
