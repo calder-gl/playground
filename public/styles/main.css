@@ -128,3 +128,9 @@ input[type="checkbox"] {
 #toolbar button {
     margin-right: 5px;
 }
+
+#camera button {
+    font-size: 0.7em;
+    padding: 0 1rem;
+    margin-left: 0.5rem;
+}
