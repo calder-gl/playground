@@ -145,15 +145,15 @@ export class State extends Persistable<BakedState> implements Serializable<Baked
     }
 
     /**
-     * asBakedType returns a representation of the State object as a TypeScript
+     * getUnderlyingObject returns a representation of the State object as a TypeScript
      * type.
      *
      * @class State
-     * @method asBakedType
+     * @method getUnderlyingObject
      * @interface Serializable
      * @return {BakedState}
      */
-    asBakedType(): BakedState {
+    getUnderlyingObject(): BakedState {
         return this;
     }
 

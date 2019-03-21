@@ -29,7 +29,7 @@ const rendererSettings = {
 
 // Draw the armature
 const draw = () => {
-    const { model, vectorField, guidingCurves, pencilLine } = currentState.asBakedType();
+    const { model, vectorField, guidingCurves, pencilLine } = currentState.getUnderlyingObject();
 
     return {
         objects: model ? [model] : [],

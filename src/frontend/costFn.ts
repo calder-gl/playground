@@ -46,7 +46,7 @@ const initialCostFnParams = [
 ]
 
 export const addCostFn = () => {
-    let { costFnParams } = currentState.asBakedType();
+    let { costFnParams } = currentState.getUnderlyingObject();
     if (!costFnParams) {
         costFnParams = List(initialCostFnParams);
     }
@@ -56,7 +56,7 @@ export const addCostFn = () => {
 };
 
 export const addCostFunctionViz = () => {
-    const { costFn, costFnParams, selectedCurve } = currentState.asBakedType();
+    const { costFn, costFnParams, selectedCurve } = currentState.getUnderlyingObject();
     if (!costFn || !costFnParams) {
         return;
     }
@@ -74,7 +74,7 @@ export const addCostFunctionViz = () => {
 };
 
 export const addNewCurve = (polyline: { x: number; y: number }[]) => {
-    const currentBakedState: BakedState = currentState.asBakedType();
+    const currentBakedState: BakedState = currentState.getUnderlyingObject();
 
     const [bezier] = fitCurve(polyline.map((point) => [point.x, point.y]), 100, undefined, true);
     const depth = vec3.distance(renderer.camera.position, renderer.camera.target);
@@ -113,7 +113,7 @@ export const addNewCurve = (polyline: { x: number; y: number }[]) => {
 }
 
 onChange('selectedCurve', () => {
-    const { guidingCurves, costFnParams, selectedCurve } = currentState.asBakedType();
+    const { guidingCurves, costFnParams, selectedCurve } = currentState.getUnderlyingObject();
     if (!costFnParams) {
         return;
     }
@@ -147,7 +147,7 @@ onChange('selectedCurve', () => {
 });
 
 const updateCostFnParams = throttle(() => {
-    let { costFnParams, selectedCurve } = currentState.asBakedType();
+    let { costFnParams, selectedCurve } = currentState.getUnderlyingObject();
     if (!costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }
@@ -176,7 +176,7 @@ const updateCostFnParams = throttle(() => {
 }, 100, { trailing: true });
 
 const deleteCurve = () => {
-    let { guidingCurves, costFnParams, selectedCurve } = currentState.asBakedType();
+    let { guidingCurves, costFnParams, selectedCurve } = currentState.getUnderlyingObject();
     if (!guidingCurves || !costFnParams || selectedCurve === undefined || selectedCurve === null) {
         return;
     }

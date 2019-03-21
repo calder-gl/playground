@@ -75,7 +75,7 @@ setupOnscreenInteractions();
 
 // OBJ export
 exportBtn.addEventListener('click', () => {
-    const currentBakedState: BakedState = currentState.asBakedType();
+    const currentBakedState: BakedState = currentState.getUnderlyingObject();
 
     if (!currentBakedState.model) {
         return;

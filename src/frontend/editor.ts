@@ -17,7 +17,7 @@ editor.setOptions({
 });
 
 onChange('source', () => {
-    const { source } = currentState.asBakedType();
+    const { source } = currentState.getUnderlyingObject();
     if (editor.getSession().getValue() === source) {
         return;
     }

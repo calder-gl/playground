@@ -11,7 +11,7 @@ export interface Serializable<T> {
     deserialize(serialized: string);
 
     // Returns a representation of the object as a TypeScript type T.
-    asBakedType(): T;
+    getUnderlyingObject(): T;
 
     // Sets the state of the object with a partial implementation of the
     // TypeScript type T.

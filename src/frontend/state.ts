@@ -13,7 +13,7 @@ export const listeners: { [key in keyof BakedState]: (() => void)[] } = {};
 const undoRedoListeners: (() => void)[] = [];
 
 export const commit = () => {
-    const currentBakedState: BakedState = currentState.asBakedType();
+    const currentBakedState: BakedState = currentState.getUnderlyingObject();
 
     undoStack.push({ ...currentBakedState });
 
@@ -26,7 +26,7 @@ export const commit = () => {
 }
 
 export const merge = () => {
-    const currentBakedState: BakedState = currentState.asBakedType();
+    const currentBakedState: BakedState = currentState.getUnderlyingObject();
 
     if (undoStack.length === 0) {
         undoStack.push({ ...currentBakedState });

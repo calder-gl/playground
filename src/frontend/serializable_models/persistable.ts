@@ -60,7 +60,7 @@ export abstract class Persistable<T> implements Serializable<T> {
     abstract deserialize(serialized: string);
 
     // Returns a representation of the object as a TypeScript type T.
-    abstract asBakedType(): T;
+    abstract getUnderlyingObject(): T;
 
     // Sets the state of the object with a partial implementation of the
     // TypeScript type T.

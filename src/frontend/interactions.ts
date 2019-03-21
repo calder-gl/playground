@@ -61,7 +61,7 @@ function handleMouseDown(event: MouseEvent) {
             controlState.selectedHandle = null;
             let closestDistance = Infinity;
 
-            const { guidingCurves, selectedCurve } = currentState.asBakedType();
+            const { guidingCurves, selectedCurve } = currentState.getUnderlyingObject();
 
             if (guidingCurves && selectedCurve !== null && selectedCurve !== undefined) {
                 const bounds = renderer.stage.getBoundingClientRect();
@@ -99,7 +99,7 @@ function handleMouseUp(event: MouseEvent) {
 
     controlState.lastMouse = null;
 
-    const { guidingCurves } = currentState.asBakedType();
+    const { guidingCurves } = currentState.getUnderlyingObject();
     if (!controlState.dragged && guidingCurves) {
         const boundingRect = renderer.stage.getBoundingClientRect();
         const selectedIndex = renderer.findCurveUnderCursor(guidingCurves.toJS(), {
@@ -117,7 +117,7 @@ function handleMouseUp(event: MouseEvent) {
         addModel();
         commit();
     } else if (controlState.mode === ControlMode.DRAW_CURVE) {
-        const { pencilLine } = currentState.asBakedType();
+        const { pencilLine } = currentState.getUnderlyingObject();
         if (pencilLine) {
             addNewCurve(pencilLine);
             addCostFn();
@@ -125,7 +125,7 @@ function handleMouseUp(event: MouseEvent) {
             addModel();
             currentState.setState({ pencilLine: undefined });
 
-            const { guidingCurves } = currentState.asBakedType();
+            const { guidingCurves } = currentState.getUnderlyingObject();
             if (guidingCurves) {
                 const selectedCurve = guidingCurves.size - 1;
                 currentState.setState({ selectedCurve, guidingCurves });
@@ -162,7 +162,7 @@ function handleMouseMove(event: MouseEvent) {
     controlState.lastMouse = nextMouse;
 
     if (controlState.mode === ControlMode.DRAW_CURVE) {
-        const { pencilLine } = currentState.asBakedType();
+        const { pencilLine } = currentState.getUnderlyingObject();
 
         if (pencilLine) {
             const bounds = renderer.stage.getBoundingClientRect();
@@ -177,7 +177,7 @@ function handleMouseMove(event: MouseEvent) {
         const direction = vec3ToVector(
             vec3.set(tmpDirection, movement.x / renderer.width, -movement.y / renderer.height, 0));
 
-        const { guidingCurves, selectedCurve, costFnParams } = currentState.asBakedType();
+        const { guidingCurves, selectedCurve, costFnParams } = currentState.getUnderlyingObject();
 
         // Bring the transform into world coordinates by applying the inverse camera transform
         const inverseTransform = mat4.invert(tmpMat4, renderer.camera.getTransform());

@@ -7,7 +7,7 @@ import { renderer } from './renderer';
 import { StillLoadingObj } from './loader';
 
 export const addGenerator = () => {
-    const { source, generator } = currentState.asBakedType();
+    const { source, generator } = currentState.getUnderlyingObject();
     const editorSource = editor.getSession().getValue();
 
     if (!editorSource || (editorSource === source && generator)) {

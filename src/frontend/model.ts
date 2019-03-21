@@ -18,7 +18,7 @@ maxDepthInput.addEventListener('input', () => {
 
 const DEFAULT_MAX_DEPTH = 100;
 onChange('maxDepth', () => {
-    const { maxDepth } = currentState.asBakedType();
+    const { maxDepth } = currentState.getUnderlyingObject();
 
     // Use a default value of 100
     const newValue = `${maxDepth || DEFAULT_MAX_DEPTH}`;
@@ -104,11 +104,11 @@ export const addModel = () => {
         generatorTask.cancel();
     }
 
-    const { generator, costFn } = currentState.asBakedType();
+    const { generator, costFn } = currentState.getUnderlyingObject();
 
     if (generator && costFn) {
         currentState.setState({ generating: true });
-        const { maxDepth = DEFAULT_MAX_DEPTH } = currentState.asBakedType();
+        const { maxDepth = DEFAULT_MAX_DEPTH } = currentState.getUnderlyingObject();
 
         // If maxDepth is less than 40, we should still have no heuristic
         // for the final round of generation
@@ -145,7 +145,7 @@ onUndoRedo(() => {
         generatorTask = null;
     }
 
-    const { generating } = currentState.asBakedType();
+    const { generating } = currentState.getUnderlyingObject();
 
     // If the undo/redo state we jumped to was waiting on a generation
     // task when it was committed, restart the task
