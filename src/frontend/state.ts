@@ -1,21 +1,21 @@
 // TODO: rename as undo/redo stack or events.ts
 
 // tslint:disable-next-line:import-name
-import { BakedState, State } from './serializable_models/state';
+import { StateObject, State } from './serializable_models/state';
 
 export const currentState: State = new State();
 
 const MAX_UNDO_SIZE = 15;
-const undoStack: BakedState[] = [];
-const redoStack: BakedState[] = [];
+const undoStack: StateObject[] = [];
+const redoStack: StateObject[] = [];
 
-export const listeners: { [key in keyof BakedState]: (() => void)[] } = {};
+export const listeners: { [key in keyof StateObject]: (() => void)[] } = {};
 const undoRedoListeners: (() => void)[] = [];
 
 export const commit = () => {
-    const currentBakedState: BakedState = currentState.getUnderlyingObject();
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
 
-    undoStack.push({ ...currentBakedState });
+    undoStack.push({ ...currentStateObject });
 
     // Remove oldest item if there are too many
     if (undoStack.length > MAX_UNDO_SIZE) {
@@ -26,12 +26,12 @@ export const commit = () => {
 }
 
 export const merge = () => {
-    const currentBakedState: BakedState = currentState.getUnderlyingObject();
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
 
     if (undoStack.length === 0) {
-        undoStack.push({ ...currentBakedState });
+        undoStack.push({ ...currentStateObject });
     } else {
-        undoStack[undoStack.length - 1] = { ...currentBakedState };
+        undoStack[undoStack.length - 1] = { ...currentStateObject };
     }
 }
 
@@ -45,7 +45,7 @@ const undo = () => {
         return;
     }
 
-    redoStack.push(<BakedState>undoStack.pop());
+    redoStack.push(<StateObject>undoStack.pop());
     this.setState(undoStack[undoStack.length - 1]);
     undoRedoListeners.forEach((callback) => callback());
 };
@@ -55,7 +55,7 @@ const redo = () => {
         return;
     }
 
-    undoStack.push(<BakedState>redoStack.pop());
+    undoStack.push(<StateObject>redoStack.pop());
     this.setState(undoStack[undoStack.length - 1]);
     undoRedoListeners.forEach((callback) => callback());
 }
@@ -64,7 +64,7 @@ export const onUndoRedo = (callback: () => void) => {
     undoRedoListeners.push(callback);
 };
 
-export const onChange = (key: keyof BakedState, callback: () => void) => {
+export const onChange = (key: keyof StateObject, callback: () => void) => {
     if (!listeners[key]) {
         listeners[key] = [];
     }

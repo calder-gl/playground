@@ -3,7 +3,7 @@ import { range, throttle } from 'lodash';
 import { fitCurve } from 'fit-curve';
 import { mat4, vec4, vec3 } from 'gl-matrix';
 import { List } from 'immutable';
-import { BakedState } from './serializable_models/state';
+import { StateObject } from './serializable_models/state';
 
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
@@ -74,7 +74,7 @@ export const addCostFunctionViz = () => {
 };
 
 export const addNewCurve = (polyline: { x: number; y: number }[]) => {
-    const currentBakedState: BakedState = currentState.getUnderlyingObject();
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
 
     const [bezier] = fitCurve(polyline.map((point) => [point.x, point.y]), 100, undefined, true);
     const depth = vec3.distance(renderer.camera.position, renderer.camera.target);
@@ -97,7 +97,7 @@ export const addNewCurve = (polyline: { x: number; y: number }[]) => {
         return point;
     });
 
-    const lastCurve = currentBakedState.costFnParams && currentBakedState.costFnParams[currentBakedState.costFnParams.size - 1];
+    const lastCurve = currentStateObject.costFnParams && currentStateObject.costFnParams[currentStateObject.costFnParams.size - 1];
 
     const curve = {
         bezier: new Bezier(bezier3D.map(([x, y, z]) => { return { x, y, z }; })),
@@ -106,7 +106,7 @@ export const addNewCurve = (polyline: { x: number; y: number }[]) => {
         alignmentOffset: lastCurve ? lastCurve.alignmentOffset : 0.7
     };
 
-    let { costFnParams = List([]) } = currentBakedState;
+    let { costFnParams = List([]) } = currentStateObject;
     costFnParams = costFnParams.push(curve);
 
     currentState.setState({ costFnParams });

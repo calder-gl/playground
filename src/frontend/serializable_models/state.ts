@@ -27,8 +27,8 @@ export type SerializableState = {
 
 export const DEFAULT_STATE_FILENAME = 'sample';
 
-// BakedState is the type representation of Settings used internally.
-export type BakedState = {
+// StateObject is the type representation of Settings used internally.
+export type StateObject = {
     generator?: calder.Generator;
     source?: string;
     model?: calder.Model;
@@ -48,7 +48,7 @@ export type BakedState = {
  *
  * @class State
  */
-export class State extends Persistable<BakedState> implements Serializable<BakedState> {
+export class State extends Persistable<StateObject> implements Serializable<StateObject> {
     generator?: calder.Generator;
     source?: string;
     model?: calder.Model;
@@ -151,9 +151,9 @@ export class State extends Persistable<BakedState> implements Serializable<Baked
      * @class State
      * @method getUnderlyingObject
      * @interface Serializable
-     * @return {BakedState}
+     * @return {StateObject}
      */
-    getUnderlyingObject(): BakedState {
+    getUnderlyingObject(): StateObject {
         return this;
     }
 
@@ -164,9 +164,9 @@ export class State extends Persistable<BakedState> implements Serializable<Baked
      * @class State
      * @method setState
      * @interface Serializable
-     * @param {Partial<BakedState>} newState The new state for the object.
+     * @param {Partial<StateObject>} newState The new state for the object.
      */
-    setState(newState: Partial<BakedState>) {
+    setState(newState: Partial<StateObject>) {
         // Don't set the state if we don't have new state to overwrite.
         if (newState == undefined) return;
 

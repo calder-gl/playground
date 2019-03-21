@@ -2,7 +2,7 @@ import * as calder from 'calder-gl';
 import * as lodash from 'lodash';
 
 import { currentState } from './state';
-import { BakedState } from './serializable_models/state';
+import { StateObject } from './serializable_models/state';
 
 import { addCostFn, addCostFunctionViz } from './costFn';
 import { addGenerator } from './generator';
@@ -75,13 +75,13 @@ setupOnscreenInteractions();
 
 // OBJ export
 exportBtn.addEventListener('click', () => {
-    const currentBakedState: BakedState = currentState.getUnderlyingObject();
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
 
-    if (!currentBakedState.model) {
+    if (!currentStateObject.model) {
         return;
     }
 
-    const obj = currentBakedState.model.exportOBJ('calderExport', ambientLightColor);
+    const obj = currentStateObject.model.exportOBJ('calderExport', ambientLightColor);
 
     const objLink = document.createElement('a');
     objLink.style.display = 'none';
