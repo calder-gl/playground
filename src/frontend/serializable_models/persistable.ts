@@ -74,7 +74,16 @@ export abstract class Persistable<T> implements Serializable<T> {
     abstract clearState();
 
     // Updates the document title associated with the persisted model.
-    public setDocumentTitle(title: string) { this.documentTitle = title; }
+    public setDocumentTitle(title: string) {
+        // Clear the old document title.
+        localStorage.removeItem(this.getDocumentTitle());
+
+        // Update the new document title.
+        this.documentTitle = title;
+
+        // Persist the state with the new document title as key.
+        this.persist();
+    }
 
     // The document title associated with the persisted model.
     private getDocumentTitle() { return this.documentTitle; }
