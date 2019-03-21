@@ -219,7 +219,6 @@ function handleMouseMove(event: MouseEvent) {
             const bezier = new Bezier(points);
 
             const newParams = { ...costFnParams.get(selectedCurve), bezier };
-            costFnParams.set(selectedCurve, newParams);
 
             // Update the path that gets visualized without replacing the whole cost function yet;
             // since that's a more expensive operation, we'll do that on mouse up
@@ -228,11 +227,12 @@ function handleMouseMove(event: MouseEvent) {
                 bezier,
                 path: bezier.getLUT().map((p) => [p.x, p.y, p.z])
             };
-            guidingCurves.set(selectedCurve, newGuidingCurve);
 
-            currentState.setState({ costFnParams, guidingCurves });
+            currentState.setState({
+                costFnParams: costFnParams.set(selectedCurve, newParams),
+                guidingCurves: guidingCurves.set(selectedCurve, newGuidingCurve)
+            });
         }
-
     } else if (controlState.mode === ControlMode.CAMERA_MOVE) {
         // Create a direction vector representing the relative movement we want
         const direction = vec3ToVector(
@@ -250,9 +250,7 @@ function handleMouseMove(event: MouseEvent) {
                 z: direction[2]
             });
         }
-
     } else if (controlState.mode === ControlMode.CAMERA_ROTATE) {
-
         // First rotate around the vertical axis
         renderer.camera.rotateAboutTarget(quat.setAxisAngle(
             tmpQuat,
