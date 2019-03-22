@@ -310,7 +310,7 @@ export const setupOnscreenInteractions = () => {
 
         button.addEventListener('click', () => {
             const targetPosition = { x: 0, y: 2, z: 0 };
-            targetPosition[axis] = 8 * side
+            targetPosition[axis] = 8 * side;
 
             const targetLookAt = { x: 0, y: 2, z: 0 };
 
