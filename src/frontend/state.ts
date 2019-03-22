@@ -1,57 +1,21 @@
-import * as calder from 'calder-gl';
-import { List } from 'immutable';
-import { defer } from 'lodash';
+// TODO: rename as undo/redo stack or events.ts
 
 // tslint:disable-next-line:import-name
-import Bezier = require('bezier-js');
+import { StateObject, State } from './serializable_models/state';
 
-export type State = {
-    generator?: calder.Generator;
-    source?: string;
-    model?: calder.Model;
-    costFnParams?: List<calder.GuidingCurve>;
-    costFn?: calder.CostFn;
-    vectorField?: Float32Array;
-    guidingCurves?: List<calder.GuidingCurveInfo>;
-    selectedCurve?: number | null;
-    generating?: boolean;
-    pencilLine?: {x: number; y: number}[];
-    maxDepth?: number;
-};
-
-type SerializableGuidingCurve = {
-    bezier: calder.coord[];
-    distanceMultiplier: calder.DistanceMultiplier;
-    alignmentMultiplier: number;
-    alignmentOffset: number;
-};
-
-export type SerializableState = {
-    source?: string;
-    costFnParams?: SerializableGuidingCurve[];
-    maxDepth?: number;
-};
-
-export const state: State = {};
+export const currentState: State = new State();
 
 const MAX_UNDO_SIZE = 15;
-const undoStack: State[] = [];
-const redoStack: State[] = [];
+const undoStack: StateObject[] = [];
+const redoStack: StateObject[] = [];
 
-const listeners: {[key in keyof State]: (() => void)[]} = {};
+export const listeners: { [key in keyof StateObject]: (() => void)[] } = {};
 const undoRedoListeners: (() => void)[] = [];
 
-export const setState = (newState: Partial<State>) => {
-    for (const key in newState) {
-        state[key] = newState[key];
-        if (listeners[key]) {
-            listeners[key].forEach((callback) => callback());
-        }
-    }
-};
-
 export const commit = () => {
-    undoStack.push({ ...state });
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
+
+    undoStack.push({ ...currentStateObject });
 
     // Remove oldest item if there are too many
     if (undoStack.length > MAX_UNDO_SIZE) {
@@ -62,10 +26,12 @@ export const commit = () => {
 }
 
 export const merge = () => {
+    const currentStateObject: StateObject = currentState.getUnderlyingObject();
+
     if (undoStack.length === 0) {
-        undoStack.push({ ...state });
+        undoStack.push({ ...currentStateObject });
     } else {
-        undoStack[undoStack.length - 1] = { ...state };
+        undoStack[undoStack.length - 1] = { ...currentStateObject };
     }
 }
 
@@ -79,7 +45,7 @@ const undo = () => {
         return;
     }
 
-    redoStack.push(<State>undoStack.pop());
+    redoStack.push(<StateObject>undoStack.pop());
     this.setState(undoStack[undoStack.length - 1]);
     undoRedoListeners.forEach((callback) => callback());
 };
@@ -89,7 +55,7 @@ const redo = () => {
         return;
     }
 
-    undoStack.push(<State>redoStack.pop());
+    undoStack.push(<StateObject>redoStack.pop());
     this.setState(undoStack[undoStack.length - 1]);
     undoRedoListeners.forEach((callback) => callback());
 }
@@ -98,7 +64,7 @@ export const onUndoRedo = (callback: () => void) => {
     undoRedoListeners.push(callback);
 };
 
-export const onChange = (key: keyof State, callback: () => void) => {
+export const onChange = (key: keyof StateObject, callback: () => void) => {
     if (!listeners[key]) {
         listeners[key] = [];
     }
@@ -118,57 +84,3 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
         event.preventDefault();
     }
 });
-
-// Saving/loading logic
-
-const freshStateCallbacks: (() => void)[] = [];
-export const onFreshState = (callback: () => void) => freshStateCallbacks.push(callback);
-
-export const serialize = (): string => {
-    const object: SerializableState = {};
-
-    object.source = state.source;
-
-    object.costFnParams = state.costFnParams && state.costFnParams.toJS().map((curve) => {
-        return {
-            distanceMultiplier: curve.distanceMultiplier,
-            alignmentMultiplier: curve.alignmentMultiplier,
-            alignmentOffset: curve.alignmentOffset,
-            bezier: curve.bezier.points
-        };
-    });
-
-    object.maxDepth = state.maxDepth;
-
-    return JSON.stringify(object);
-};
-
-export const loadSavedState = (serialized: string) => {
-    const object = <SerializableState>JSON.parse(serialized);
-
-    clearUndoRedo();
-
-    const freshState: Partial<State> = {}
-    for (let key in state) {
-        freshState[key] = undefined;
-    }
-
-    freshState.source = object.source;
-
-    freshState.costFnParams = object.costFnParams && List(object.costFnParams.map((curve: SerializableGuidingCurve) => {
-        return {
-            distanceMultiplier: curve.distanceMultiplier,
-            alignmentMultiplier: curve.alignmentMultiplier,
-            alignmentOffset: curve.alignmentOffset,
-            bezier: new Bezier(curve.bezier)
-        };
-    }));
-
-    freshState.maxDepth = object.maxDepth;
-
-    setState(freshState);
-    freshStateCallbacks.forEach((callback) => callback());
-};
-
-// Once all other setup has run, populate the state
-defer(() => freshStateCallbacks.forEach((callback) => callback()));

@@ -1,6 +1,6 @@
 import * as calder from 'calder-gl';
 
-import { merge, onChange, onUndoRedo, setState, state } from './state';
+import { merge, onChange, onUndoRedo, currentState } from './state';
 
 let generatorTask: calder.GeneratorTask | null = null;
 
@@ -13,13 +13,15 @@ maxDepthInput.addEventListener('input', () => {
         return;
     }
 
-    setState({ maxDepth });
+    currentState.setState({ maxDepth });
 });
 
 const DEFAULT_MAX_DEPTH = 100;
 onChange('maxDepth', () => {
+    const { maxDepth } = currentState.getUnderlyingObject();
+
     // Use a default value of 100
-    const newValue = `${state.maxDepth || DEFAULT_MAX_DEPTH}`;
+    const newValue = `${maxDepth || DEFAULT_MAX_DEPTH}`;
 
     // Avoid resetting the input if it already has this value to not disrupt typing
     if (maxDepthInput.value != newValue) {
@@ -102,15 +104,17 @@ export const addModel = () => {
         generatorTask.cancel();
     }
 
-    if (state.generator && state.costFn) {
-        setState({ generating: true });
-        const { maxDepth = DEFAULT_MAX_DEPTH } = state;
+    const { generator, costFn } = currentState.getUnderlyingObject();
+
+    if (generator && costFn) {
+        currentState.setState({ generating: true });
+        const { maxDepth = DEFAULT_MAX_DEPTH } = currentState.getUnderlyingObject();
 
         // If maxDepth is less than 40, we should still have no heuristic
         // for the final round of generation
         const heuristicCutoff = Math.min(40, maxDepth);
 
-        generatorTask = state.generator.generateSOSMC(
+        generatorTask = generator.generateSOSMC(
             {
                 start: 'START',
                 sosmcDepth: maxDepth,
@@ -122,15 +126,15 @@ export const addModel = () => {
                         return 0;
                     }
                 },
-                costFn: state.costFn
+                costFn: costFn
             },
             1 / 30
         )
-        .then((model: calder.Model) => {
-            generatorTask = null;
-            setState({ model, generating: false })
-            merge();
-        });
+            .then((model: calder.Model) => {
+                generatorTask = null;
+                currentState.setState({ model, generating: false })
+                merge();
+            });
     }
 };
 
@@ -141,9 +145,11 @@ onUndoRedo(() => {
         generatorTask = null;
     }
 
+    const { generating } = currentState.getUnderlyingObject();
+
     // If the undo/redo state we jumped to was waiting on a generation
     // task when it was committed, restart the task
-    if (state.generating) {
+    if (generating) {
         addModel();
     }
 });
