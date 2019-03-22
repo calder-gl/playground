@@ -8,25 +8,14 @@ const deleteBtn = <HTMLButtonElement>document.getElementById('deleteFile');
 const menu = <HTMLSelectElement>document.getElementById('edit');
 const DEFAULT = 'sample';
 const NEW = '___new';
-let currentDocument: string;
 
 /* Persisters */
-
-const saveState = () => currentState.persist();
 
 const maybeInitializeState = () => {
     // Set the state source with default source if it's empty.
     if (!currentState.empty()) return;
     currentState.setState({ source: defaultSource });
     currentState.persist()
-};
-
-/* Loaders */
-
-const loadState = () => currentState.retrieve();
-const loadStateForDocument = () => {
-    currentState.setDocumentTitle(currentDocument);
-    loadState();
 };
 
 /* View Updater Functions */
@@ -49,7 +38,7 @@ const updateEditMenu = () => {
         option.value = key;
         option.innerText = key;
 
-        if (currentDocument === key) {
+        if (currentState.getDocumentTitle() === key) {
             option.selected = true;
         }
 
@@ -63,10 +52,10 @@ const updateEditMenu = () => {
 };
 
 export const initializeLocalStorage = () => {
-    if (!currentDocument) {
-        currentDocument = DEFAULT;
+    if (currentState.getDocumentTitle() === '') {
+        currentState.setDocumentTitle(DEFAULT);
         maybeInitializeState();
-        currentState.deserialize(<string>localStorage.getItem(currentDocument));
+        currentState.deserialize(<string>localStorage.getItem(DEFAULT));
     }
 
     updateEditMenu();
@@ -75,30 +64,32 @@ export const initializeLocalStorage = () => {
 /* Event Listeners */
 
 menu.addEventListener('change', () => {
-    currentDocument = menu.value;
+    let currentDocument = menu.value;
 
     if (currentDocument === NEW) {
-        currentDocument = prompt('Filename:') || DEFAULT;
+        currentState.setDocumentTitle(prompt('Filename:') || DEFAULT);
         maybeInitializeState();
+    } else {
+        currentState.setDocumentTitle(currentDocument);
     }
 
-    loadStateForDocument();
+    currentState.retrieve();
 });
 
 saveAsBtn.addEventListener('click', () => {
     const name = prompt('New filename:');
 
     if (name) {
-        currentDocument = name;
-        saveState();
+        currentState.persist();
+        currentState.setDocumentTitle(name);
         updateEditMenu();
     }
 });
 
 deleteBtn.addEventListener('click', () => {
     if (confirm('Are you sure you want to delete this document?')) {
-        localStorage.removeItem(currentDocument);
-        currentDocument = DEFAULT;
+        currentState.remove();
+        currentState.setDocumentTitle(DEFAULT);
         maybeInitializeState();
         currentState.deserialize(<string>localStorage.getItem(DEFAULT));
     }
@@ -106,7 +97,10 @@ deleteBtn.addEventListener('click', () => {
 
 ['source', 'costFnParams', 'maxDepth'].forEach((key: keyof SerializableState) => {
     onChange(key, throttle(
-        saveState,
+        () => {
+            console.log(currentState.getDocumentTitle());
+            currentState.persist()
+        },
         100,
         { trailing: true }
     ));

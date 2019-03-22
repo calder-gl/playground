@@ -116,18 +116,20 @@ export class State extends Persistable<StateObject> implements Serializable<Stat
      * @param {string} serialized The serialized JSON object.
      */
     deserialize(serialized: string) {
+        // Set all values to undefined.
+        this.clearState();
+
         // Deserialize the stored JSON object.
         const serializedObject = <SerializableState>JSON.parse(serialized);
 
         // Clear the undo and redo stacks for the editor.
-        // TODO: make global stack object which we call.
         clearUndoRedo();
 
         // Clear the current properties of the State object.
         this.clearState()
 
-        this.source = serializedObject.source;
-        this.costFnParams = serializedObject.costFnParams &&
+        const source = serializedObject.source;
+        const costFnParams = serializedObject.costFnParams &&
             List(serializedObject.costFnParams.map((curve: SerializableGuidingCurve) => {
                 return {
                     distanceMultiplier: curve.distanceMultiplier,
@@ -137,7 +139,10 @@ export class State extends Persistable<StateObject> implements Serializable<Stat
                 };
             }));
 
-        this.maxDepth = serializedObject.maxDepth;
+        const maxDepth = serializedObject.maxDepth;
+
+        // Update the state of the object.
+        this.setState({ source, costFnParams, maxDepth });
 
         // Update other state with fresh state callbacks (since we only
         // serialize the `source` and `costFnParams`.

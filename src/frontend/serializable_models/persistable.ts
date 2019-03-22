@@ -31,7 +31,7 @@ export abstract class Persistable<T> implements Serializable<T> {
     }
 
     /**
-     * Retrieves an JSON serialized object from local storage.
+     * retrieve retrieves an JSON serialized object from local storage.
      *
      * @class Persistable
      * @method retrieve
@@ -39,6 +39,16 @@ export abstract class Persistable<T> implements Serializable<T> {
     retrieve() {
         const savedState = localStorage.getItem(this.getDocumentTitle()) || '{}';
         this.deserialize(savedState);
+    }
+
+    /**
+     * remove deletes the document with this.documentTitle from local storage.
+     *
+     * @class Persistable
+     * @method remove
+     */
+    remove() {
+        localStorage.removeItem(this.getDocumentTitle());
     }
 
     /**
@@ -53,16 +63,10 @@ export abstract class Persistable<T> implements Serializable<T> {
     }
 
     // Updates the document title associated with the persisted model.
-    setDocumentTitle(title: string) {
-        // Update the new document title.
-        this.documentTitle = title;
-
-        // Persist the state with the new document title as key.
-        this.persist();
-    }
+    setDocumentTitle(title: string) { this.documentTitle = title; }
 
     // The document title associated with the persisted model.
-    private getDocumentTitle() { return this.documentTitle; }
+    getDocumentTitle() { return this.documentTitle; }
 
     // Takes the object and serialize it to a JSON string representation.
     abstract serialize(): string;
