@@ -302,3 +302,28 @@ export const setupOnscreenInteractions = () => {
     renderer.stage.addEventListener('mousedown', handleMouseDown);
     renderer.stage.addEventListener('wheel', handleWheel);
 }
+
+['x', 'y', 'z'].forEach((axis) => {
+    [-1, 1].forEach((side) => {
+        const id = `${axis}_${side == 1 ? 'plus' : 'minus'}`;
+        const button = <HTMLButtonElement>document.getElementById(id);
+
+        button.addEventListener('click', () => {
+            const targetPosition = { x: 0, y: 2, z: 0 };
+            targetPosition[axis] = 8 * side;
+
+            const targetLookAt = { x: 0, y: 2, z: 0 };
+
+            if (axis === 'y') {
+                targetLookAt.y = 0;
+
+                // We can't look exactly up or down, as we use (0, 1, 0) as the up
+                // vector, and we don't want the viewing direction to be exactly that.
+                targetPosition.x = 0.001;
+            }
+
+            renderer.camera.lookAt(targetLookAt);
+            renderer.camera.moveToWithFixedTarget(targetPosition);
+        });
+    });
+});
