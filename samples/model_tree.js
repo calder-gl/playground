@@ -1,10 +1,13 @@
+// Tree with model leaves and trunk
+
 // Setup leaf
 const leafColor = RGBColor.fromRGB(204, 255, 204);
-const leafSphere = Shape.sphere(Material.create({ color: leafColor, shininess: 100 }));
+const leaf = loadObj('leaves', 'leaves');
 
 // Setup branch
 const branchColor = RGBColor.fromRGB(102, 76.5, 76.5);
-const branchShape = Shape.cylinder(Material.create({ color: branchColor, shininess: 1 }));
+const branchMaterial = Material.create({ color: branchColor, shininess: 1 });
+const branch = loadObj('trunk', 'trunk');
 
 const bone = Armature.define((root) => {
     root.createPoint('base', { x: 0, y: 0, z: 0 });
@@ -25,13 +28,17 @@ generator
             .release();
         node
             .hold(node.point('handle'))
-            .rotate(Math.random() * 70)
+            .rotate(Math.random() * 80)
             .release();
-        node.scale(0.8); // Shrink a bit
+        node.scale(0.7); // Shrink a bit
 
         Generator.decorate(() => {
-          const trunk = node.point('mid').attach(branchShape);
-          trunk.scale({ x: 0.2, y: 1, z: 0.2 });
+            const trunkBone = bone();
+            
+            const trunk = trunkBone.point('mid').attachModel(branch);
+            trunk.scale({ x: 0.2, y: 0.5, z: 0.2 });
+
+            trunkBone.point('mid').stickTo(node.point('mid'));
         });
 
         Generator.addDetail({ component: 'branchOrLeaf', at: node.point('tip') });
@@ -43,8 +50,16 @@ generator
         Generator.addDetail({ component: 'maybeBranch', at: root });
     })
     .define('leaf', (root) => {
-        const leaf = root.attach(leafSphere);
-        leaf.scale(Math.random() * 0.5 + 0.5);
+        const leafBone = bone();
+        leafBone.createPoint('leafAnchor', {x: 0.6, y: 0.2, z: 0.9});
+        leafBone
+            .hold(leafBone.point('base'))
+            .grab(leafBone.point('tip'))
+            .pointAt({x: 0, y: 0, z: -20})
+            .release();
+        leafBone.point('leafAnchor').attachModel(leaf);
+        leafBone.scale(Math.random() + 0.4);
+        leafBone.point('base').stickTo(root);
     })
     .maybe('maybeBranch', (root) => {
         Generator.addDetail({ component: 'branch', at: root });
