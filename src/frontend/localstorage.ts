@@ -97,10 +97,7 @@ deleteBtn.addEventListener('click', () => {
 
 ['source', 'costFnParams', 'maxDepth'].forEach((key: keyof SerializableState) => {
     onChange(key, throttle(
-        () => {
-            console.log(currentState.getDocumentTitle());
-            currentState.persist()
-        },
+        () => currentState.persist(),
         100,
         { trailing: true }
     ));
