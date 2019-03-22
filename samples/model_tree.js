@@ -2,7 +2,7 @@
 
 // Setup leaf
 const leafColor = RGBColor.fromRGB(204, 255, 204);
-const leaf = loadObj('leaves', 'leaves'); //, Material.create({ color: leafColor, shininess: 100 })
+const leaf = loadObj('leaves', 'leaves');
 
 // Setup branch
 const branchColor = RGBColor.fromRGB(102, 76.5, 76.5);
@@ -37,8 +37,7 @@ generator
             
             const trunk = trunkBone.point('mid').attachModel(branch);
             trunk.scale({ x: 0.2, y: 0.5, z: 0.2 });
-            //trunkBone.scale(0.3);
-            
+
             trunkBone.point('mid').stickTo(node.point('mid'));
         });
 

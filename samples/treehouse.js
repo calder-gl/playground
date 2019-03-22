@@ -19,6 +19,9 @@ const bone = Armature.define((root) => {
     root.createPoint('handle', { x: 1, y: 0, z: 0 });
 });
 
+// Helper to extend a node and add a house unit onto it. `offset` and `size` parameters
+// control how big the house unit should be. More house units are spawned on the top
+// and on each side in a coordinate space scaled by the `rescale` parameter.
 const addBlock = (node, offset, size, rescale) => {
     node.createPoint('blockOffset', offset);
     
@@ -70,6 +73,9 @@ generator
             .release();
         addBlock(node, {x: 0, y: 0, z: 0}, {x: 1, y: 1, z: 1}, 1);
     })
+
+    // A unit spawned on top of another unit can optionally be places atop stilts.
+    // Version with stilts:
     .define('top', (root) => {
         const node = bone();
         node.point('base').stickTo(root);
@@ -88,17 +94,14 @@ generator
             });
         });
     })
+    // Variant without stilts:
     .define('top', (root) => {
-        // no stilts
         const node = bone();
         node.point('base').stickTo(root);
         node.scale(Math.random() * 0.4 + 0.6);
-        /*node
-            .hold(node.point('tip'))
-            .rotate(Math.random() * 360)
-            .release();*/
         addBlock(node, {x: 0, y: 0, z: 0}, {x: 1, y: 1, z: 1}, 1);
     })
+    // ...or just add nothing:
     .define('top', () => {})
     .wrapUp('top', () => {})
     
@@ -108,6 +111,7 @@ generator
         node.scale(Math.min(1, Math.random() * 0.4 + 0.6)); // Random resize
         addBlock(node, {x: 0.35, y: 0.5, z: 0}, {x: 0.7, y: 1, z: 0.7}, 0.8);
         
+        // Side nodes have two supports under the unit so it's not entirely cantilevered
         Generator.decorate(() => {
             [-1, 1].forEach((zOff) => {
                 const pointName = `support${zOff}`;
