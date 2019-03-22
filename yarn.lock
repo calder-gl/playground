@@ -834,8 +834,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-"calder-gl@file:../calder":
+calder-gl@calder-gl/calder#master:
   version "0.0.0"
+  resolved "https://codeload.github.com/calder-gl/calder/tar.gz/7d15ab354b387e244533101cb7d46d9a5229c9a7"
   dependencies:
     "@types/bezier-js" "^0.0.7"
     "@types/gl-matrix" "^2.4.0"
