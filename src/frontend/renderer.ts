@@ -23,7 +23,7 @@ const light1: calder.Light = calder.Light.create({
 renderer.addLight(light1);
 
 const rendererSettings = {
-    showVectorField: true,
+    showVectorField: false,
     showBones: false
 };
 

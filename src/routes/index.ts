@@ -10,7 +10,7 @@ import * as path from "path";
  */
 export class IndexRoute extends BaseRoute {
     private static defaultSource: string =
-        '' + fs.readFileSync(path.join(__dirname, '../../samples/sphere_tree.js'));
+        '' + fs.readFileSync(path.join(__dirname, '../../public/samples/sphere_tree.js'));
 
     /**
      * Create the routes.

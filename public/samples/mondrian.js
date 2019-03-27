@@ -25,7 +25,7 @@ const bone = Armature.define((root) => {
 const makeCube = (root, cube) => {
     const node = bone();
     node.point('base').stickTo(root);
-    
+
     Generator.decorate(() => {
         if (cube === undefined) {
             cube = sample([whiteCube, redCube, blueCube, blackCube, yellowCube]);
@@ -34,7 +34,7 @@ const makeCube = (root, cube) => {
         const shape = node.point('cubeOffset').attach(cube);
         shape.scale({ x: 1, y: 0.1, z: 1 });
     });
-    
+
     [-0.25, 0.25].forEach((xOff) => {
         [-0.25, 0.25].forEach((zOff) => {
             const scaled = bone();

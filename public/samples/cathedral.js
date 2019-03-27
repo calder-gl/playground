@@ -18,7 +18,7 @@ generator.define('START', Generator.replaceWith('base'))
     const node = bone();
     node.point('base').stickTo(root);
     node.hold(node.point('tip')).rotate(-45).release();
-    
+
     Generator.addDetail({ component: 'block', at: node.point('base') });
 })
 .define('block', (root) => {
@@ -32,7 +32,7 @@ generator.define('START', Generator.replaceWith('base'))
     node.createPoint('back', {x: 0, y: 0, z: depth});
     node.createPoint('front', {x: 0, y: 0, z: 0});
     node.createPoint('top', {x: 0, y: height, z: depth / 2});
-    
+
     Generator.decorate(() => {
         const blockNode = bone();
         blockNode.scale({x: width, y: height, z: depth});
@@ -40,7 +40,7 @@ generator.define('START', Generator.replaceWith('base'))
         blockNode.createPoint('blockHandle', {x: 0, y: 0.5, z: 0.5});
         blockNode.point('blockHandle').attachModel(cube);
     });
-    
+
     const sideAnglePairs = [['left', 90], ['right', -90], ['back', 0], ['front', 180]];
     sideAnglePairs.forEach(([side, angle]) => {
         const sideBone = bone();
@@ -49,7 +49,7 @@ generator.define('START', Generator.replaceWith('base'))
         sideBone.hold(sideBone.point('tip')).rotate(angle).release();
         Generator.addDetail({ component: 'blockOrFacade', at: sideBone.point('base') });
     });
-    
+
     const topBone = bone();
     topBone.point('base').stickTo(node.point('top'));
     topBone.scale(width, height, depth);
@@ -60,18 +60,18 @@ generator.define('START', Generator.replaceWith('base'))
 .define('facade', (root) => Generator.decorate(() => {
     const node = bone();
     node.point('base').stickTo(root);
-    
+
     node.createPoint('left', {x: -0.4, y: 0.5, z: 0.05});
     node.createPoint('right', {x: 0.4, y: 0.5, z: 0.05});
-    
+
     node.createPoint('windowLeft', {x: -0.2, y: 0.4, z: 0.05});
     node.createPoint('windowCenter', {x: 0, y: 0.4, z: 0.05});
     node.createPoint('windowRight', {x: 0.2, y: 0.4, z: 0.05});
-    
+
     ['left', 'right'].forEach((side) => {
        node.point(side).attachModel(cube).scale({x: 0.2, y: 1, z: 0.1});
     });
-    
+
     ['Left', 'Right', 'Center'].forEach((side) => {
        const block = node.point(`window${side}`).attachModel(windowBlock);
        block.scale({x: 0.1, y: 0.3, z: 0.05});
@@ -86,7 +86,7 @@ generator.define('START', Generator.replaceWith('base'))
     node.point('base').stickTo(root);
     node.createPoint('left', {x: -0.3, y: 0, z: 0.3});
     node.createPoint('right', {x: 0.3, y: 0, z: 0.3});
-    
+
     ['left', 'right'].forEach((side) => {
        const sideBone = bone();
        sideBone.point('base').stickTo(node.point(side));
@@ -112,7 +112,7 @@ generator.define('START', Generator.replaceWith('base'))
        cubeBone.scale({x: 0.5, y: 1, z: 0.5});
        cubeBone.createPoint('cubeAnchor', {x: 0, y: 0.5, z: 0});
        cubeBone.point('cubeAnchor').attachModel(cube);
-    
+
         [0, 0.5, 1, 1.5].forEach((angleMultiplier) => {
            const towerBone = bone();
            towerBone.point('base').stickTo(root);
@@ -122,7 +122,7 @@ generator.define('START', Generator.replaceWith('base'))
            towerBone.point('towerAnchor').attachModel(pointed);
         });
     });
-    
+
     const nextTower = bone();
     nextTower.point('base').stickTo(root);
     nextTower.scale({x: 0.8, y: 0.95, z: 0.8});
