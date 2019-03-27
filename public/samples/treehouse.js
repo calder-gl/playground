@@ -24,25 +24,25 @@ const bone = Armature.define((root) => {
 // and on each side in a coordinate space scaled by the `rescale` parameter.
 const addBlock = (node, offset, size, rescale) => {
     node.createPoint('blockOffset', offset);
-    
+
     Generator.decorate(() => {
         houseNode = bone();
         houseNode.point('base').stickTo(node.point('blockOffset'));
-        
+
         houseNode.createPoint('houseLocation', { x: -size.x/2, y: 0, z: -size.z/2 });
         const body = houseNode.point('houseLocation').attach(houseBody);
         body.scale(size);
-        
+
         houseNode.createPoint('roofLocation', { x: -size.x/2-0.05, y: size.y-0.05, z: -size.z/2-0.05 });
         const roof = houseNode.point('roofLocation').attach(roofBody);
         roof.scale({ x: size.x + 0.1, y: 0.1, z: size.z + 0.1 });
     });
-    
+
     node.createPoint('topSpawn', { x: offset.x, y: offset.y + size.y, z: offset.z });
     topBone = bone().scale(rescale);
     topBone.point('base').stickTo(node.point('topSpawn'));
     Generator.addDetail({ component: 'top', at: topBone.point('base') });
-    
+
     [0, 90, 180, 270].forEach((angle) => {
         const sideNode = bone().scale(rescale);
         const yOff = 0.3;
@@ -57,9 +57,9 @@ const addWindow = (node, offset) => {
     const width = 0.2;
     const pointName = `window${offset}`;
     node.createPoint(pointName, {...offset, z: offset.z - width/2});
-    
+
     win = node.point(pointName).attach(windowBody);
-    win.scale({ x: 0.02, y: width, z: width });  
+    win.scale({ x: 0.02, y: width, z: width });
 };
 
 generator
@@ -82,7 +82,7 @@ generator
         node.scale(Math.random() * 0.4 + 0.9);
         node.scale(0.8); // Shrink a bit
         addBlock(node, {x: 0, y: 0.3, z: 0}, {x: 0.8, y: 0.8, z: 0.8}, 1);
-        
+
         Generator.decorate(() => {
             [-1, 1].forEach((xOff) => {
                 [-1, 1].forEach((zOff) => {
@@ -104,13 +104,13 @@ generator
     // ...or just add nothing:
     .define('top', () => {})
     .wrapUp('top', () => {})
-    
+
     .define('side', (root) => {
         const node = bone();
         node.point('base').stickTo(root);
         node.scale(Math.min(1, Math.random() * 0.4 + 0.6)); // Random resize
         addBlock(node, {x: 0.35, y: 0.5, z: 0}, {x: 0.7, y: 1, z: 0.7}, 0.8);
-        
+
         // Side nodes have two supports under the unit so it's not entirely cantilevered
         Generator.decorate(() => {
             [-1, 1].forEach((zOff) => {
@@ -126,13 +126,13 @@ generator
     .defineWeighted('side', 0.5, Generator.replaceWith('maybeWindow'))
     .defineWeighted('side', 0.5, () => {})
     .wrapUp('side', Generator.replaceWith('maybeWindow'))
-    
+
     .define('maybeWindow', (root) => {
         const node = bone();
         node.point('base').stickTo(root);
-        
+
         if (Math.random() > 0.3) addWindow(node, { x: 0, y: 0.15, z: 0.15 });
         if (Math.random() > 0.3) addWindow(node, { x: 0, y: 0.15, z: -0.15 });
     })
-    
+
     .thenComplete(['maybeWindow']);

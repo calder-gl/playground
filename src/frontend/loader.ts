@@ -6,7 +6,7 @@ import { addModel } from './model';
 
 // A subclass of Error that gets handled silently to indicate that render progress
 // should stop due to a model still being loaded.
-export class StillLoadingObj extends Error {}
+export class StillLoadingObj extends Error { }
 
 export namespace ObjLoader {
     const modelCache: { [name: string]: Model } = {};
@@ -29,7 +29,7 @@ export namespace ObjLoader {
                 Promise.all([
                     fetch(`/models/${objName}.obj`),
                     fetch(`/models/${mtlName}.mtl`)
-                ]).then((responses) => {;
+                ]).then((responses) => {
                     return Promise.all(responses.map((response) => response.text()));
                 }).then(([objData, mtlData]) => {
 
@@ -61,5 +61,12 @@ export namespace ObjLoader {
         }
 
         return modelCache[objName];
+    }
+
+    export function loadSample(sampleName: string): Promise<string> {
+        return fetch(`/samples/${sampleName}.js`)
+            .then((response) => {
+                return response.text();
+            });
     }
 }

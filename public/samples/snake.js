@@ -34,7 +34,7 @@ generator.define('START', (spawn) => {
     const base = bone();
     base.point('base').stickTo(spawn);
     base.hold(base.point('handle')).rotate(90);
-    
+
     Generator.addDetail({component: 'segment or head', at: base.point('base')});
     Generator.addDetail({component: 'tail', at: base.point('base')});
 });
@@ -53,11 +53,11 @@ generator.defineWeighted('segment or head', 5, (spawn) => {
     const segment = segmentBone();
     segment.point('base').stickTo(spawn);
     segment.hold(segment.point('handle')).rotate(Math.random()*90 - 45).release();
-    
+
     Generator.decorate(() => {
         segment.point('mid').attach(segmentShape).scale({x: 0.5, y: 1.2, z: 0.3});
     });
-    
+
     Generator.addDetail({component: 'segment or head', at: segment.point('tip')});
 });
 generator.define('head', (spawn) => {

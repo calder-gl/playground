@@ -42,6 +42,12 @@ window.onbeforeunload = () => {
     return 'Are you sure you want to leave?';
 };
 
+export const saveAndRun = () => {
+    addCostFn();
+    addGenerator();
+    addModel();
+};
+
 // Set initial state
 currentState.onFreshState(() => {
     ObjLoader.clearModelCache();
@@ -54,9 +60,7 @@ currentState.onFreshState(() => {
 
 // Add UI hooks
 runBtn.addEventListener('click', () => {
-    addCostFn();
-    addGenerator();
-    addModel();
+    saveAndRun();
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {

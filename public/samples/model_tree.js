@@ -34,7 +34,7 @@ generator
 
         Generator.decorate(() => {
             const trunkBone = bone();
-            
+
             const trunk = trunkBone.point('mid').attachModel(branch);
             trunk.scale({ x: 0.2, y: 0.5, z: 0.2 });
 
