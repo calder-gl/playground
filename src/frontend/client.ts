@@ -9,7 +9,7 @@ import { addGenerator } from './generator';
 import { addModel } from './model';
 import { ambientLightColor, renderer } from './renderer';
 import { setupOnscreenInteractions } from './interactions';
-import { initializeLocalStorage } from './localstorage';
+import { updateEditMenu } from './localstorage';
 import { ObjLoader } from './loader';
 
 // Add globals for use in user code
@@ -45,7 +45,7 @@ window.onbeforeunload = () => {
 // Set initial state
 currentState.onFreshState(() => {
     ObjLoader.clearModelCache();
-    initializeLocalStorage();
+    updateEditMenu();
     addCostFn();
     addCostFunctionViz();
     addGenerator();

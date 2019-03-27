@@ -5,9 +5,6 @@ import 'brace/ext/language_tools';
 import { Completion } from './Completion';
 import { onChange, currentState } from './state';
 
-const codeElement = <HTMLScriptElement>document.getElementById('code');
-export const defaultSource = codeElement.innerText;
-
 export const editor = ace.edit('source');
 editor.getSession().setMode('ace/mode/javascript');
 ace.acequire('ace/ext/language_tools').addCompleter(new Completion());

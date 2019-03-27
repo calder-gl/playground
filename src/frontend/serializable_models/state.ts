@@ -6,6 +6,9 @@ import { clearUndoRedo, listeners } from '../state';
 import { Persistable } from './persistable';
 import { Serializable } from './serializable';
 
+const codeElement = <HTMLScriptElement>document.getElementById('code');
+export const defaultSource = codeElement.innerText;
+
 // tslint:disable-next-line:import-name
 import Bezier = require('bezier-js');
 
@@ -74,7 +77,7 @@ export class State extends Persistable<StateObject> implements Serializable<Stat
         this.clearState()
 
         // Once all other setup has run, populate the state.
-        defer(() => this.freshStateCallbacks.forEach((callback) => callback()));
+        defer(() => this.retrieve());
     }
 
     /**
@@ -128,7 +131,8 @@ export class State extends Persistable<StateObject> implements Serializable<Stat
         // Clear the current properties of the State object.
         this.clearState()
 
-        const source = serializedObject.source;
+        const source = serializedObject.source || defaultSource;
+
         const costFnParams = serializedObject.costFnParams &&
             List(serializedObject.costFnParams.map((curve: SerializableGuidingCurve) => {
                 return {
