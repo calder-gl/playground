@@ -104,11 +104,14 @@ export const addModel = () => {
         generatorTask.cancel();
     }
 
-    const { generator, costFn } = currentState.getUnderlyingObject();
+    const {
+        generator,
+        costFn,
+        maxDepth = DEFAULT_MAX_DEPTH
+    } = currentState.getUnderlyingObject();
 
     if (generator && costFn) {
         currentState.setState({ generating: true });
-        const { maxDepth = DEFAULT_MAX_DEPTH } = currentState.getUnderlyingObject();
 
         // If maxDepth is less than 40, we should still have no heuristic
         // for the final round of generation
@@ -135,6 +138,12 @@ export const addModel = () => {
                 currentState.setState({ model, generating: false })
                 merge();
             });
+
+    } else if (generator) {
+        // No guiding curves, generate without constraints
+
+        const model = generator.generate({ start: 'START', depth: maxDepth });
+        currentState.setState({ model, generating: false });
     }
 };
 

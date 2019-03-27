@@ -50,13 +50,22 @@ export const addCostFn = () => {
     if (!costFnParams) {
         costFnParams = List(initialCostFnParams);
     }
-    const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS());
 
-    currentState.setState({ costFnParams, costFn });
+    if (costFnParams.count() > 0) {
+        const costFn = calder.CostFunction.guidingVectors(costFnParams.toJS());
+
+        currentState.setState({ costFnParams, costFn });
+    } else {
+        currentState.setState({ costFnParams, costFn: null });
+    }
 };
 
 export const addCostFunctionViz = () => {
     const { costFn, costFnParams, selectedCurve } = currentState.getUnderlyingObject();
+    if (!costFn) {
+        currentState.setState({ vectorField: undefined });
+    }
+
     if (!costFn || !costFnParams) {
         return;
     }
@@ -131,7 +140,7 @@ onChange('selectedCurve', () => {
         distanceMultiplierControls.forEach((control) => control.disabled = false);
         alignmentMultiplierControl.disabled = false;
         alignmentOffsetControl.disabled = false;
-        deleteBtn.disabled = costFnParams.size <= 1;
+        deleteBtn.disabled = false;
 
         distanceMultiplierControls.forEach(
             (control, i) => control.value = costFnParams.get(selectedCurve).distanceMultiplier[i]);
@@ -178,11 +187,6 @@ const updateCostFnParams = throttle(() => {
 const deleteCurve = () => {
     let { guidingCurves, costFnParams, selectedCurve } = currentState.getUnderlyingObject();
     if (!guidingCurves || !costFnParams || selectedCurve === undefined || selectedCurve === null) {
-        return;
-    }
-
-    // Must have at least one curve
-    if (costFnParams.size === 1) {
         return;
     }
 
