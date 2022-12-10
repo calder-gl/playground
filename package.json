@@ -17,7 +17,7 @@
     "brace": "^0.11.1",
     "calder-gl": "calder-gl/calder#master",
     "errorhandler": "^1.5.0",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "fit-curve": "calder-gl/fit-curve#master",
     "gl-matrix": "^2.8.1",
     "immutable": "^3.8.2",
